@@ -36,15 +36,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header
-    class="header-wrapper"
-    :class="{ scrolled: isScrolled }"
-  >
-    <div 
-      class="header"
-      @mouseover="handleHover"
-      @mouseleave="handleLeave"
-    >
+  <header class="header-wrapper" :class="{ scrolled: isScrolled }">
+    <div class="header" @mouseover="handleHover" @mouseleave="handleLeave">
       <div class="header-glow"></div>
       <div class="header-shine"></div>
       
@@ -59,22 +52,8 @@ onUnmounted(() => {
                     <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
                     <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
                   </linearGradient>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
                 </defs>
-                <polygon 
-                  points="50,10 85,30 85,70 50,90 15,70 15,30"
-                  fill="none"
-                  stroke="url(#logoGradient)"
-                  stroke-width="3"
-                  class="logo-hexagon"
-                  filter="url(#glow)"
-                />
+                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="url(#logoGradient)" stroke-width="3" class="logo-hexagon"/>
                 <circle cx="50" cy="35" r="2" fill="#667eea" opacity="0.6" class="logo-dot dot-1"/>
                 <circle cx="65" cy="50" r="2" fill="#764ba2" opacity="0.6" class="logo-dot dot-2"/>
                 <circle cx="35" cy="50" r="2" fill="#f093fb" opacity="0.6" class="logo-dot dot-3"/>
@@ -82,9 +61,7 @@ onUnmounted(() => {
               </svg>
             </div>
             <div class="brand-text">
-              <h1 class="header-title" :class="{ glow: isHovered }">
-                {{ title }}
-              </h1>
+              <h1 class="header-title" :class="{ glow: isHovered }">{{ title }}</h1>
               <span class="header-subtitle">Platforma edukacyjna</span>
             </div>
           </div>
@@ -155,6 +132,12 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .header-wrapper {
   position: fixed;
   top: 0;
@@ -163,6 +146,7 @@ onUnmounted(() => {
   z-index: 1000;
   padding: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
 .header-wrapper.scrolled {
@@ -184,7 +168,8 @@ onUnmounted(() => {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 10px 40px var(--color-shadow);
-  overflow: hidden;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .header-wrapper.scrolled .header {
@@ -259,6 +244,7 @@ onUnmounted(() => {
 
 .header-left {
   flex: 1;
+  min-width: 0;
 }
 
 .logo-group {
@@ -296,17 +282,9 @@ onUnmounted(() => {
   transition: all 0.4s ease;
 }
 
-.header:hover .dot-1 {
-  animation: pulse 1.5s ease infinite;
-}
-
-.header:hover .dot-2 {
-  animation: pulse 1.5s ease 0.2s infinite;
-}
-
-.header:hover .dot-3 {
-  animation: pulse 1.5s ease 0.4s infinite;
-}
+.header:hover .dot-1 { animation: pulse 1.5s ease infinite; }
+.header:hover .dot-2 { animation: pulse 1.5s ease 0.2s infinite; }
+.header:hover .dot-3 { animation: pulse 1.5s ease 0.4s infinite; }
 
 @keyframes pulse {
   0%, 100% { opacity: 0.6; r: 2; }
@@ -325,6 +303,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .header-title {
@@ -364,17 +343,23 @@ onUnmounted(() => {
 
 .mobile-menu-toggle {
   display: none;
-  background: none;
-  border: none;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
   z-index: 1001;
-  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(102, 126, 234, 0.2);
 }
 
 .hamburger {
   display: block;
-  width: 28px;
+  width: 24px;
   height: 2px;
   background: var(--color-text);
   position: relative;
@@ -386,34 +371,20 @@ onUnmounted(() => {
 .hamburger::after {
   content: '';
   position: absolute;
-  width: 28px;
+  width: 24px;
   height: 2px;
   background: var(--color-text);
   transition: all 0.3s ease;
   border-radius: 2px;
+  left: 0;
 }
 
-.hamburger::before {
-  top: -8px;
-}
+.hamburger::before { top: -7px; }
+.hamburger::after { bottom: -7px; }
 
-.hamburger::after {
-  bottom: -8px;
-}
-
-.hamburger.open {
-  background: transparent;
-}
-
-.hamburger.open::before {
-  top: 0;
-  transform: rotate(45deg);
-}
-
-.hamburger.open::after {
-  bottom: 0;
-  transform: rotate(-45deg);
-}
+.hamburger.open { background: transparent; }
+.hamburger.open::before { top: 0; transform: rotate(45deg); }
+.hamburger.open::after { bottom: 0; transform: rotate(-45deg); }
 
 .nav-menu {
   display: flex;
@@ -423,7 +394,7 @@ onUnmounted(() => {
 
 .nav-link {
   position: relative;
-  padding: 12px 20px 16px;
+  padding: 12px 20px;
   font-weight: 600;
   font-size: 0.9rem;
   border-radius: 14px;
@@ -434,6 +405,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nav-icon {
@@ -456,10 +428,10 @@ onUnmounted(() => {
   bottom: 6px;
   left: 20px;
   right: 20px;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
   background-size: 200% 100%;
-  border-radius: 3px;
+  border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -567,189 +539,162 @@ onUnmounted(() => {
   height: 20px;
 }
 
-.moon-icon {
-  animation: moonAppear 0.5s ease;
-}
-
-.sun-icon {
-  animation: sunAppear 0.5s ease;
-}
+.moon-icon { animation: moonAppear 0.5s ease; }
+.sun-icon { animation: sunAppear 0.5s ease; }
 
 @keyframes moonAppear {
-  from {
-    transform: rotate(-180deg) scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: rotate(0deg) scale(1);
-    opacity: 1;
-  }
+  from { transform: rotate(-180deg) scale(0); opacity: 0; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
 }
 
 @keyframes sunAppear {
-  from {
-    transform: rotate(180deg) scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: rotate(0deg) scale(1);
-    opacity: 1;
-  }
+  from { transform: rotate(180deg) scale(0); opacity: 0; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
 }
 
-/* Desktop - 1024px+ */
 @media (max-width: 1024px) {
   .header {
-    padding: 16px 32px;
+    padding: 16px 30px;
   }
-
-  .nav-menu {
-    gap: 4px;
-  }
-
+  .nav-menu { gap: 4px; }
   .nav-link {
     padding: 10px 16px;
     font-size: 0.85rem;
   }
-
   .header-title {
     font-size: 1.4rem;
   }
 }
 
-/* Tablet - 768px */
 @media (max-width: 768px) {
   .header-wrapper {
-    padding: 12px;
+    padding: 10px;
   }
-
   .header {
     height: auto;
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-radius: 16px;
   }
-
   .header-wrapper.scrolled {
-    padding: 8px 12px;
+    padding: 8px 10px;
   }
-
   .header-wrapper.scrolled .header {
-    padding: 14px 18px;
+    padding: 10px 14px;
   }
-
   .mobile-menu-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
-
+  .logo-group {
+    gap: 10px;
+  }
   .header-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
   }
-
   .header-subtitle {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
   }
-
   .nav-menu {
-    position: absolute;
-    top: calc(100% + 12px);
-    left: 0;
-    right: 0;
-    flex-direction: column;
+    position: fixed;
+    top: 80px;
+    left: 10px;
+    right: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
     background: var(--color-bg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-border);
     border-radius: 16px;
-    padding: 16px;
+    padding: 12px;
     gap: 8px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 12px 40px var(--color-shadow);
-    max-height: 70vh;
-    overflow-y: auto;
+    justify-content: center;
   }
-
   .nav-menu.mobile-open {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
-
   .nav-link {
-    width: 100%;
-    justify-content: flex-start;
-    padding: 14px 18px;
-    font-size: 0.95rem;
+    flex: 0 0 calc(50% - 4px);
+    justify-content: center;
+    padding: 12px 10px;
+    font-size: 0.85rem;
   }
-
-  .nav-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .nav-indicator {
-    left: 18px;
-    right: 18px;
-    bottom: 10px;
-  }
-
-  .nav-cta {
-    margin-left: 0;
-  }
-}
-
-/* Mobile - 480px */
-@media (max-width: 480px) {
-  .header-title {
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-  }
-
-  .header-subtitle {
-    font-size: 0.6rem;
-    letter-spacing: 1px;
-  }
-
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .logo-group {
-    gap: 12px;
-  }
-
-  .nav-link {
-    padding: 12px 16px;
-    font-size: 0.9rem;
-  }
-
   .nav-icon {
     width: 18px;
     height: 18px;
   }
+  .nav-text {
+    font-size: 0.85rem;
+  }
+  .nav-indicator {
+    left: 10px;
+    right: 10px;
+    bottom: 6px;
+    height: 2px;
+  }
+  .nav-cta {
+    margin-left: 0;
+    flex: 0 0 100%;
+  }
+  .theme-toggle {
+    flex: 0 0 calc(50% - 4px);
+  }
 }
 
-/* Very small mobile - 375px */
-@media (max-width: 375px) {
+@media (max-width: 480px) {
   .header-title {
     font-size: 0.9rem;
   }
+  .header-subtitle {
+    font-size: 0.55rem;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .nav-menu {
+    top: 70px;
+  }
+  .nav-link {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .nav-text {
+    font-size: 0.8rem;
+  }
+}
 
+@media (max-width: 375px) {
   .header-subtitle {
     display: none;
   }
-
-  .brand-text {
-    gap: 0;
+  .header-title {
+    font-size: 0.85rem;
+  }
+  .logo-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .logo-group {
+    gap: 8px;
   }
 }
 </style>

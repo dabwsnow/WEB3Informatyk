@@ -13,7 +13,6 @@ const categories = ref([
     subtitle: 'Sprzęt, systemy, sieci',
     description: 'Administracja i eksploatacja systemów komputerowych, urządzeń peryferyjnych i lokalnych sieci komputerowych',
     icon: '🖥️',
-    color: 'blue',
     link: '/tests/inf02'
   },
   {
@@ -21,7 +20,6 @@ const categories = ref([
     subtitle: 'Programowanie, bazy danych',
     description: 'Tworzenie aplikacji internetowych, baz danych oraz administrowanie bazami danych',
     icon: '💾',
-    color: 'green',
     link: '/tests/inf03'
   },
   {
@@ -29,32 +27,15 @@ const categories = ref([
     subtitle: 'Projektowanie aplikacji',
     description: 'Projektowanie, programowanie i testowanie aplikacji desktopowych i mobilnych',
     icon: '📱',
-    color: 'purple',
     link: '/tests/inf04'
   }
 ])
 
 const features = ref([
-  {
-    title: 'Testy Online',
-    description: 'Tysiące pytań z oficjalnych arkuszy egzaminacyjnych',
-    icon: '✍️'
-  },
-  {
-    title: 'Arkusze Praktyczne',
-    description: 'Kompletne rozwiązania zadań praktycznych krok po kroku',
-    icon: '🔧'
-  },
-  {
-    title: 'Nauka Teorii',
-    description: 'Materiały edukacyjne i dokumentacja techniczna',
-    icon: '📚'
-  },
-  {
-    title: 'Kalkulatory',
-    description: 'Narzędzia pomocnicze do obliczeń i konwersji',
-    icon: '🧮'
-  }
+  { title: 'Testy Online', description: 'Tysiące pytań z oficjalnych arkuszy egzaminacyjnych', icon: '✍️' },
+  { title: 'Arkusze Praktyczne', description: 'Kompletne rozwiązania zadań praktycznych krok po kroku', icon: '🔧' },
+  { title: 'Nauka Teorii', description: 'Materiały edukacyjne i dokumentacja techniczna', icon: '📚' },
+  { title: 'Kalkulatory', description: 'Narzędzia pomocnicze do obliczeń i konwersji', icon: '🧮' }
 ])
 
 const isVisible = ref(false)
@@ -68,7 +49,6 @@ onMounted(() => {
 
 <template>
   <div class="home-container" :class="{ visible: isVisible }">
-    <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-content">
         <div class="hero-badge">
@@ -99,14 +79,8 @@ onMounted(() => {
           </router-link>
         </div>
 
-        <!-- Stats -->
         <div class="stats-grid">
-          <div 
-            v-for="(stat, index) in stats" 
-            :key="index" 
-            class="stat-card"
-            :style="{ animationDelay: `${index * 0.1}s` }"
-          >
+          <div v-for="(stat, index) in stats" :key="index" class="stat-card" :style="{ animationDelay: `${index * 0.1}s` }">
             <span class="stat-icon">{{ stat.icon }}</span>
             <div class="stat-number">{{ stat.number }}</div>
             <div class="stat-label">{{ stat.label }}</div>
@@ -121,7 +95,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Categories Section -->
     <section class="categories-section">
       <div class="section-header">
         <h2 class="section-title">Główne kwalifikacje</h2>
@@ -129,13 +102,7 @@ onMounted(() => {
       </div>
 
       <div class="categories-grid">
-        <div 
-          v-for="(category, index) in categories" 
-          :key="index"
-          class="category-card"
-          :class="`category-${category.color}`"
-          :style="{ animationDelay: `${index * 0.15}s` }"
-        >
+        <div v-for="(category, index) in categories" :key="index" class="category-card" :style="{ animationDelay: `${index * 0.15}s` }">
           <div class="category-icon">{{ category.icon }}</div>
           <h3 class="category-title">{{ category.title }}</h3>
           <p class="category-subtitle">{{ category.subtitle }}</p>
@@ -153,7 +120,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features-section">
       <div class="section-header">
         <h2 class="section-title">Co oferujemy?</h2>
@@ -161,12 +127,7 @@ onMounted(() => {
       </div>
 
       <div class="features-grid">
-        <div 
-          v-for="(feature, index) in features" 
-          :key="index"
-          class="feature-card"
-          :style="{ animationDelay: `${index * 0.1}s` }"
-        >
+        <div v-for="(feature, index) in features" :key="index" class="feature-card" :style="{ animationDelay: `${index * 0.1}s` }">
           <div class="feature-icon">{{ feature.icon }}</div>
           <h3 class="feature-title">{{ feature.title }}</h3>
           <p class="feature-description">{{ feature.description }}</p>
@@ -174,7 +135,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Info Section -->
     <section class="info-section">
       <div class="info-card">
         <h2 class="info-title">
@@ -184,12 +144,8 @@ onMounted(() => {
         <div class="info-content">
           <p>Egzamin zawodowy składa się z <strong>dwóch części</strong>:</p>
           <ul class="info-list">
-            <li>
-              <strong>Część teoretyczna (60 min)</strong> - 40 pytań wielokrotnego wyboru
-            </li>
-            <li>
-              <strong>Część praktyczna (240 min)</strong> - wykonanie praktycznych zadań egzaminacyjnych
-            </li>
+            <li><strong>Część teoretyczna (60 min)</strong> - 40 pytań wielokrotnego wyboru</li>
+            <li><strong>Część praktyczna (240 min)</strong> - wykonanie praktycznych zadań egzaminacyjnych</li>
           </ul>
         </div>
       </div>
@@ -201,12 +157,8 @@ onMounted(() => {
         </h2>
         <div class="info-content">
           <ul class="info-list">
-            <li>
-              <strong>Część pisemna:</strong> minimum 50% punktów (20/40)
-            </li>
-            <li>
-              <strong>Część praktyczna:</strong> minimum 75% punktów
-            </li>
+            <li><strong>Część pisemna:</strong> minimum 50% punktów (20/40)</li>
+            <li><strong>Część praktyczna:</strong> minimum 75% punktów</li>
           </ul>
           <p class="info-note">
             💡 Możesz poprawiać tylko jedną część egzaminu, jeśli zdałeś drugą.
@@ -215,7 +167,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta-section">
       <div class="cta-content">
         <h2 class="cta-title">Gotowy na start?</h2>
@@ -234,6 +185,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .home-container {
   width: 100%;
   max-width: 1400px;
@@ -242,6 +199,7 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
 .home-container.visible {
@@ -249,10 +207,9 @@ onMounted(() => {
   transform: translateY(0);
 }
 
-/* Hero Section */
 .hero-section {
-  padding: 80px 0 60px;
-  overflow: hidden;
+  position: relative;
+  padding: 60px 0 40px;
 }
 
 .hero-content {
@@ -287,7 +244,7 @@ onMounted(() => {
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 800;
   line-height: 1.1;
   margin: 0 0 24px;
@@ -305,7 +262,7 @@ onMounted(() => {
 }
 
 .hero-description {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1.6;
   color: var(--color-subtext);
   margin: 0 0 40px;
@@ -323,6 +280,7 @@ onMounted(() => {
   margin-bottom: 60px;
   animation: fadeInUp 0.6s ease 0.3s forwards;
   opacity: 0;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -337,6 +295,7 @@ onMounted(() => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: none;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -366,17 +325,17 @@ onMounted(() => {
   width: 18px;
   height: 18px;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn:hover .btn-icon {
   transform: translateX(4px);
 }
 
-/* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -386,7 +345,7 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  padding: 32px 24px;
+  padding: 28px 20px;
   text-align: center;
   transition: all 0.3s ease;
   animation: fadeInUp 0.6s ease forwards;
@@ -406,7 +365,7 @@ onMounted(() => {
 }
 
 .stat-number {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: var(--color-text);
   margin-bottom: 8px;
@@ -417,12 +376,11 @@ onMounted(() => {
 }
 
 .stat-label {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--color-subtext);
   font-weight: 500;
 }
 
-/* Hero Decoration */
 .hero-decoration {
   position: absolute;
   top: 0;
@@ -430,6 +388,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 0;
 }
 
 .decoration-circle {
@@ -466,16 +425,15 @@ onMounted(() => {
   animation: float 12s ease-in-out infinite;
 }
 
-/* Section Styles */
 .categories-section,
 .features-section,
 .info-section {
-  padding: 80px 0;
+  padding: 60px 0;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
 }
 
 .section-title {
@@ -491,11 +449,10 @@ onMounted(() => {
   margin: 0;
 }
 
-/* Categories Grid */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
 }
 
 .category-card {
@@ -504,7 +461,7 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  padding: 40px 32px;
+  padding: 36px 28px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   animation: fadeInUp 0.6s ease forwards;
@@ -529,7 +486,7 @@ onMounted(() => {
 }
 
 .category-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 8px;
@@ -567,6 +524,7 @@ onMounted(() => {
   width: 18px;
   height: 18px;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .category-link:hover .link-arrow {
@@ -590,10 +548,9 @@ onMounted(() => {
   opacity: 0.08;
 }
 
-/* Features Grid */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
 }
 
@@ -627,7 +584,7 @@ onMounted(() => {
 }
 
 .feature-title {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 12px;
@@ -640,11 +597,10 @@ onMounted(() => {
   margin: 0;
 }
 
-/* Info Section */
 .info-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
 }
 
 .info-card {
@@ -652,7 +608,7 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  padding: 40px;
+  padding: 36px;
   transition: all 0.3s ease;
 }
 
@@ -673,6 +629,7 @@ onMounted(() => {
 
 .info-icon {
   font-size: 2rem;
+  flex-shrink: 0;
 }
 
 .info-content p {
@@ -712,9 +669,8 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-/* CTA Section */
 .cta-section {
-  padding: 100px 0;
+  padding: 80px 0;
   text-align: center;
 }
 
@@ -749,7 +705,6 @@ onMounted(() => {
   box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5);
 }
 
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -770,80 +725,73 @@ onMounted(() => {
   }
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .hero-title {
     font-size: 3rem;
   }
-
-  .categories-grid,
-  .info-section {
+  .categories-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
+  .home-container {
+    padding: 0 16px;
+  }
   .hero-section {
     padding: 40px 0 30px;
   }
-
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
-
   .hero-description {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
-
   .hero-buttons {
     flex-direction: column;
     gap: 12px;
   }
-
   .btn {
     width: 100%;
     justify-content: center;
   }
-
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-
   .section-title {
     font-size: 2rem;
   }
-
   .categories-grid,
   .features-grid {
     grid-template-columns: 1fr;
   }
-
   .cta-title {
     font-size: 2rem;
   }
-
   .info-section {
     gap: 20px;
+    grid-template-columns: 1fr;
   }
-
   .info-card {
-    padding: 24px;
+    padding: 28px 24px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
-
   .hero-description {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
-
   .category-card,
   .info-card {
     padding: 24px 20px;
+  }
+  .btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
   }
 }
 </style>

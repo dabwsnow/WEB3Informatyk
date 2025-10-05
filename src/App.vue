@@ -2,7 +2,11 @@
 import Header from './components/Header.vue'
 import Home from './components/Home.vue'
 import Footer from './components/Footer.vue'
-import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
+
+const route = useRoute()
+const isHomePage = computed(() => route.path === '/')
 
 onMounted(() => {
   const savedTheme = 'dark'
@@ -14,9 +18,9 @@ onMounted(() => {
   <div class="app-container">
     <Header />
     <main class="main-content">
-      <Home />
-      <div class="page-content">
-        <router-view />
+      <Home v-if="isHomePage" />
+      <div class="page-content" :class="{ 'home-page': isHomePage }">
+        <router-view v-if="!isHomePage" />
       </div>
     </main>
     <Footer />
@@ -70,6 +74,10 @@ body {
   transition: color 0.4s ease;
 }
 
+.page-content.home-page {
+  display: none;
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 10px;
@@ -104,7 +112,6 @@ body {
   .main-content {
     padding-top: 160px;
   }
-
   .page-content {
     padding: 0 16px;
   }
