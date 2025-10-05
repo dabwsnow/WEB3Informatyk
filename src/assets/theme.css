@@ -1,0 +1,50 @@
+/* 🌙 Тёмная тема — по умолчанию */
+:root {
+  --color-bg: rgba(30, 30, 30, 0.75);
+  --color-bg-hover: rgba(45, 45, 45, 0.85);
+  --color-text: #e6e6e6;
+  --color-subtext: rgba(255, 255, 255, 0.7);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-accent: #b0b0b0;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* ☀️ Светлая тема — мягкий светло-серый, без жёлтого */
+[data-theme="light"] {
+  --color-bg: #eceef1; /* Холодный светло-серый фон */
+  --color-bg-hover: #e3e6ea; /* Ещё более мягкий серый для hover */
+  --color-text: #2d2d2d; /* Тёмно-серый текст для читаемости */
+  --color-subtext: rgba(80, 80, 80, 0.7); /* Мягкий субтекст */
+  --color-border: rgba(0, 0, 0, 0.15); /* Лёгкая граница */
+  --color-accent: #6b7280; /* Нейтральный серый акцент */
+  --color-shadow: rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+}
+
+/* 🌈 Глобальный переход темы */
+html, body, #app {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    box-shadow 0.5s ease,
+    backdrop-filter 0.5s ease;
+}
+
+/* Можно добавить фон всей страницы */
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Гладкое изменение цвета ссылок и текста */
+* {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
