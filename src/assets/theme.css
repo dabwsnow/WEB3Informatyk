@@ -1,50 +1,287 @@
+/* src/assets/theme.css */
+
 /* 🌙 Тёмная тема — по умолчанию */
 :root {
-  --color-bg: rgba(30, 30, 30, 0.75);
-  --color-bg-hover: rgba(45, 45, 45, 0.85);
-  --color-text: #e6e6e6;
-  --color-subtext: rgba(255, 255, 255, 0.7);
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-accent: #b0b0b0;
-  --color-shadow: rgba(0, 0, 0, 0.4);
+  /* Backgrounds */
+  --color-bg: rgba(20, 20, 25, 0.8);
+  --color-bg-hover: rgba(35, 35, 45, 0.9);
+  --page-bg: linear-gradient(135deg, #0f0f15 0%, #1a1a25 50%, #0f0f15 100%);
+  
+  /* Text Colors */
+  --color-text: #f0f0f5;
+  --color-subtext: rgba(255, 255, 255, 0.75);
+  
+  /* Borders & Accents */
+  --color-border: rgba(102, 126, 234, 0.15);
+  --color-accent: #8b9bea;
+  
+  /* Shadows */
+  --color-shadow: rgba(0, 0, 0, 0.5);
+  --color-shadow-light: rgba(102, 126, 234, 0.1);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --gradient-secondary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-tertiary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-/* ☀️ Светлая тема — мягкий светло-серый, без жёлтого */
+/* ☀️ Светлая тема */
 [data-theme="light"] {
-  --color-bg: #eceef1; /* Холодный светло-серый фон */
-  --color-bg-hover: #e3e6ea; /* Ещё более мягкий серый для hover */
-  --color-text: #2d2d2d; /* Тёмно-серый текст для читаемости */
-  --color-subtext: rgba(80, 80, 80, 0.7); /* Мягкий субтекст */
-  --color-border: rgba(0, 0, 0, 0.15); /* Лёгкая граница */
-  --color-accent: #6b7280; /* Нейтральный серый акцент */
-  --color-shadow: rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  /* Backgrounds */
+  --color-bg: rgba(255, 255, 255, 0.85);
+  --color-bg-hover: rgba(245, 245, 250, 0.95);
+  --page-bg: linear-gradient(135deg, #f8f9ff 0%, #ffffff 50%, #f8f9ff 100%);
+  
+  /* Text Colors */
+  --color-text: #1a1a2e;
+  --color-subtext: rgba(0, 0, 0, 0.7);
+  
+  /* Borders & Accents */
+  --color-border: rgba(102, 126, 234, 0.2);
+  --color-accent: #5a6fcf;
+  
+  /* Shadows */
+  --color-shadow: rgba(102, 126, 234, 0.15);
+  --color-shadow-light: rgba(102, 126, 234, 0.05);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --gradient-secondary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-tertiary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
-/* 🌈 Глобальный переход темы */
+/* 🌈 Глобальные переходы темы */
 html, body, #app {
   transition:
-    background-color 0.5s ease,
-    color 0.5s ease,
-    border-color 0.5s ease,
-    box-shadow 0.5s ease,
-    backdrop-filter 0.5s ease;
+    background 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Можно добавить фон всей страницы */
+/* Фон страницы */
 body {
-  background: var(--color-bg);
+  background: var(--page-bg);
+  background-attachment: fixed;
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
   color: var(--color-text);
-  font-family: 'Inter', sans-serif;
   margin: 0;
   min-height: 100vh;
-  transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Гладкое изменение цвета ссылок и текста */
+@keyframes gradientAnimation {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Плавные переходы для всех элементов */
 * {
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
     border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Улучшенные кнопки */
+button, .btn {
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:focus-visible, .btn:focus-visible {
+  outline: 2px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+
+/* Улучшенные инпуты */
+input, textarea, select {
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Улучшенные ссылки */
+a {
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #667eea;
+}
+
+/* Красивый фокус для доступности */
+*:focus-visible {
+  outline: 2px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Улучшенный текст */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p {
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+/* Глобальные утилиты */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card {
+  background: var(--color-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--color-shadow);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+/* Анимации загрузки */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Утилиты для анимаций */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease forwards;
+}
+
+.slide-down {
+  animation: slideDown 0.6s ease forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease forwards;
+}
+
+/* Улучшенные тени */
+.shadow-sm {
+  box-shadow: 0 2px 8px var(--color-shadow-light);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 32px var(--color-shadow);
+}
+
+.shadow-xl {
+  box-shadow: 0 16px 48px var(--color-shadow);
+}
+
+/* Responsive утилиты */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}
+
+/* Темная тема - дополнительные стили */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] img {
+  opacity: 0.9;
+}
+
+/* Светлая тема - дополнительные стили */
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="light"] img {
+  opacity: 1;
+}
+
+/* Прелоадер */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+}
+
+.preloader.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
