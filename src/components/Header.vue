@@ -59,6 +59,13 @@ onUnmounted(() => {
                     <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
                     <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
                   </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
                 </defs>
                 <polygon 
                   points="50,10 85,30 85,70 50,90 15,70 15,30"
@@ -66,6 +73,7 @@ onUnmounted(() => {
                   stroke="url(#logoGradient)"
                   stroke-width="3"
                   class="logo-hexagon"
+                  filter="url(#glow)"
                 />
                 <circle cx="50" cy="35" r="2" fill="#667eea" opacity="0.6" class="logo-dot dot-1"/>
                 <circle cx="65" cy="50" r="2" fill="#764ba2" opacity="0.6" class="logo-dot dot-2"/>
@@ -74,7 +82,9 @@ onUnmounted(() => {
               </svg>
             </div>
             <div class="brand-text">
-              <h1 class="header-title" :class="{ glow: isHovered }">{{ title }}</h1>
+              <h1 class="header-title" :class="{ glow: isHovered }">
+                {{ title }}
+              </h1>
               <span class="header-subtitle">Platforma edukacyjna</span>
             </div>
           </div>
@@ -174,7 +184,7 @@ onUnmounted(() => {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 10px 40px var(--color-shadow);
-  overflow: visible;
+  overflow: hidden;
 }
 
 .header-wrapper.scrolled .header {
@@ -354,22 +364,17 @@ onUnmounted(() => {
 
 .mobile-menu-toggle {
   display: none;
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  border-radius: 10px;
+  background: none;
+  border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 8px;
   z-index: 1001;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu-toggle:hover {
-  background: rgba(102, 126, 234, 0.2);
+  position: relative;
 }
 
 .hamburger {
   display: block;
-  width: 24px;
+  width: 28px;
   height: 2px;
   background: var(--color-text);
   position: relative;
@@ -381,7 +386,7 @@ onUnmounted(() => {
 .hamburger::after {
   content: '';
   position: absolute;
-  width: 24px;
+  width: 28px;
   height: 2px;
   background: var(--color-text);
   transition: all 0.3s ease;
@@ -389,11 +394,11 @@ onUnmounted(() => {
 }
 
 .hamburger::before {
-  top: -7px;
+  top: -8px;
 }
 
 .hamburger::after {
-  bottom: -7px;
+  bottom: -8px;
 }
 
 .hamburger.open {
@@ -418,7 +423,7 @@ onUnmounted(() => {
 
 .nav-link {
   position: relative;
-  padding: 12px 20px;
+  padding: 12px 20px 16px;
   font-weight: 600;
   font-size: 0.9rem;
   border-radius: 14px;
@@ -448,7 +453,7 @@ onUnmounted(() => {
 
 .nav-indicator {
   position: absolute;
-  bottom: 10px;
+  bottom: 6px;
   left: 20px;
   right: 20px;
   height: 3px;
@@ -592,9 +597,10 @@ onUnmounted(() => {
   }
 }
 
+/* Desktop - 1024px+ */
 @media (max-width: 1024px) {
   .header {
-    padding: 16px 30px;
+    padding: 16px 32px;
   }
 
   .nav-menu {
@@ -611,23 +617,24 @@ onUnmounted(() => {
   }
 }
 
+/* Tablet - 768px */
 @media (max-width: 768px) {
   .header-wrapper {
-    padding: 10px;
+    padding: 12px;
   }
 
   .header {
     height: auto;
-    padding: 12px 16px;
+    padding: 16px 20px;
     border-radius: 16px;
   }
 
   .header-wrapper.scrolled {
-    padding: 8px 10px;
+    padding: 8px 12px;
   }
 
   .header-wrapper.scrolled .header {
-    padding: 10px 14px;
+    padding: 14px 18px;
   }
 
   .mobile-menu-toggle {
@@ -637,14 +644,70 @@ onUnmounted(() => {
   }
 
   .logo-icon {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
-  .logo-group {
-    gap: 10px;
+  .header-title {
+    font-size: 1.2rem;
   }
 
+  .header-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--color-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 16px;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 40px var(--color-shadow);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .nav-menu.mobile-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav-link {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+  }
+
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-indicator {
+    left: 18px;
+    right: 18px;
+    bottom: 10px;
+  }
+
+  .nav-cta {
+    margin-left: 0;
+  }
+}
+
+/* Mobile - 480px */
+@media (max-width: 480px) {
   .header-title {
     font-size: 1rem;
     letter-spacing: 0.5px;
@@ -655,114 +718,38 @@ onUnmounted(() => {
     letter-spacing: 1px;
   }
 
-  .nav-menu {
-    position: fixed;
-    top: 80px;
-    left: 10px;
-    right: 10px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    background: var(--color-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
-    padding: 12px;
-    gap: 8px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 12px 40px var(--color-shadow);
-    justify-content: center;
+  .logo-icon {
+    width: 36px;
+    height: 36px;
   }
 
-  .nav-menu.mobile-open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  .logo-group {
+    gap: 12px;
   }
 
   .nav-link {
-    flex: 0 0 calc(50% - 4px);
-    justify-content: center;
-    padding: 12px 10px;
-    font-size: 0.85rem;
+    padding: 12px 16px;
+    font-size: 0.9rem;
   }
 
   .nav-icon {
     width: 18px;
     height: 18px;
   }
-
-  .nav-text {
-    font-size: 0.85rem;
-  }
-
-  .nav-indicator {
-    left: 10px;
-    right: 10px;
-    bottom: 8px;
-  }
-
-  .nav-cta {
-    margin-left: 0;
-    flex: 0 0 100%;
-  }
-
-  .theme-toggle {
-    flex: 0 0 calc(50% - 4px);
-  }
 }
 
-@media (max-width: 480px) {
+/* Very small mobile - 375px */
+@media (max-width: 375px) {
   .header-title {
     font-size: 0.9rem;
   }
 
   .header-subtitle {
-    font-size: 0.55rem;
-  }
-
-  .logo-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .nav-menu {
-    top: 70px;
-  }
-
-  .nav-link {
-    padding: 10px 8px;
-    font-size: 0.8rem;
-  }
-
-  .nav-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .nav-text {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 375px) {
-  .header-subtitle {
     display: none;
   }
 
-  .header-title {
-    font-size: 0.85rem;
-  }
-
-  .logo-icon {
-    width: 30px;
-    height: 30px;
-  }
-
-  .logo-group {
-    gap: 8px;
+  .brand-text {
+    gap: 0;
   }
 }
 </style>
