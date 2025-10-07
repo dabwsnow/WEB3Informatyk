@@ -1,11 +1,41 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import GlobalSearch from './GlobalSearch.vue'
+import UserMenu from './UserMenu.vue'
 
+const router = useRouter()
 const title = ref('WEB3 INFORMATYK')
 const isHovered = ref(false)
 const theme = ref('dark')
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
+
+// Состояние пользователя
+const isLoggedIn = ref(false)
+const currentUser = ref({
+  firstName: 'Jan',
+  lastName: 'Kowalski',
+  username: 'jankowalski',
+  avatar: null
+})
+
+// Проверяем авторизацию при загрузке
+onMounted(() => {
+  const savedTheme = 'dark'
+  theme.value = savedTheme
+  document.documentElement.setAttribute('data-theme', savedTheme)
+  window.addEventListener('scroll', handleScroll)
+  
+  // Проверяем токен пользователя
+  const userToken = localStorage.getItem('userToken')
+  const userData = localStorage.getItem('userData')
+  
+  if (userToken && userData) {
+    isLoggedIn.value = true
+    currentUser.value = JSON.parse(userData)
+  }
+})
 
 const handleHover = () => (isHovered.value = true)
 const handleLeave = () => (isHovered.value = false)
@@ -23,12 +53,12 @@ const handleScroll = () => {
   isScrolled.value = window.scrollY > 30
 }
 
-onMounted(() => {
-  const savedTheme = 'dark'
-  theme.value = savedTheme
-  document.documentElement.setAttribute('data-theme', savedTheme)
-  window.addEventListener('scroll', handleScroll)
-})
+const handleLogout = () => {
+  isLoggedIn.value = false
+  localStorage.removeItem('userToken')
+  localStorage.removeItem('userData')
+  router.push('/')
+}
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
@@ -65,6 +95,10 @@ onUnmounted(() => {
               <span class="header-subtitle">Platforma edukacyjna</span>
             </div>
           </div>
+        </div>
+
+        <div class="header-center">
+          <GlobalSearch />
         </div>
 
         <button class="mobile-menu-toggle" @click="toggleMobileMenu" aria-label="Toggle menu">
@@ -240,11 +274,17 @@ onUnmounted(() => {
   height: 100%;
   position: relative;
   z-index: 1;
+  gap: 20px;
 }
 
 .header-left {
-  flex: 1;
-  min-width: 0;
+  flex-shrink: 0;
+}
+
+.header-center {
+  flex: 0 1 400px;
+  display: flex;
+  justify-content: center;
 }
 
 .logo-group {
@@ -390,6 +430,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .nav-link {
@@ -556,6 +597,9 @@ onUnmounted(() => {
   .header {
     padding: 16px 30px;
   }
+  .header-center {
+    flex: 0 1 300px;
+  }
   .nav-menu { gap: 4px; }
   .nav-link {
     padding: 10px 16px;
@@ -580,6 +624,9 @@ onUnmounted(() => {
   }
   .header-wrapper.scrolled .header {
     padding: 10px 14px;
+  }
+  .header-center {
+    display: none;
   }
   .mobile-menu-toggle {
     display: flex;

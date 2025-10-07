@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   tests: {
@@ -12,6 +15,19 @@ const props = defineProps({
 const filteredTests = computed(() => {
   return props.tests
 })
+
+const startTest = (test) => {
+  console.log('Kliknięto test:', test.category, 'Type:', test.type)
+  
+  // Если это база вопросов, перенаправляем на /baza/
+  if (test.type === 'database' || test.category.endsWith('-baza')) {
+    console.log('Przekierowanie do bazy:', `/baza/${test.category}`)
+    router.push(`/baza/${test.category}`)
+  } else {
+    console.log('Przekierowanie do testu:', `/tests/${test.category}`)
+    router.push(`/tests/${test.category}`)
+  }
+}
 </script>
 
 <template>
@@ -21,8 +37,8 @@ const filteredTests = computed(() => {
       :key="test.id"
       class="test-card"
     >
-      <div class="test-badge badge-theoretical">
-        Część teoretyczna
+      <div class="test-badge" :class="test.type === 'database' ? 'badge-database' : 'badge-theoretical'">
+        {{ test.type === 'database' ? 'Baza pytań' : 'Część teoretyczna' }}
       </div>
       <h3 class="test-title">{{ test.title }}</h3>
       <p class="test-description">{{ test.description }}</p>
@@ -38,7 +54,7 @@ const filteredTests = computed(() => {
           </svg>
           <span>{{ test.questions }} pytań</span>
         </div>
-        <div class="stat-item">
+        <div v-if="test.time > 0" class="stat-item">
           <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <circle cx="12" cy="12" r="10" stroke-width="2"/>
             <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round"/>
@@ -46,8 +62,8 @@ const filteredTests = computed(() => {
           <span>{{ test.time }} min</span>
         </div>
       </div>
-      <button class="start-test-btn">
-        <span>Rozpocznij test</span>
+      <button @click="startTest(test)" class="start-test-btn">
+        <span>{{ test.type === 'database' ? 'Przeglądaj bazę' : 'Rozpocznij test' }}</span>
         <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -103,6 +119,11 @@ const filteredTests = computed(() => {
 .badge-theoretical {
   background: rgba(102, 126, 234, 0.15);
   color: #667eea;
+}
+
+.badge-database {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
 }
 
 .test-title {
@@ -193,6 +214,7 @@ const filteredTests = computed(() => {
 .no-results {
   text-align: center;
   padding: 80px 20px;
+  grid-column: 1 / -1;
 }
 
 .no-results-icon {

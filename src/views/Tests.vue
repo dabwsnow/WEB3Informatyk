@@ -5,18 +5,19 @@ import TestCards from '../components/card/TestCard.vue'
 const selectedCategory = ref('all')
 const searchQuery = ref('')
 const categories = ref([
-  { id: 'all', name: 'Wszystkie', icon: '📚', count: 15 },
-  { id: 'inf02', name: 'INF.02 / EE.08', icon: '🖥️', count: 3 },
-  { id: 'inf03', name: 'INF.03 / EE.09', icon: '💾', count: 3 },
-  { id: 'inf04', name: 'INF.04 / E.14', icon: '📱', count: 3 },
-  { id: 'e12', name: 'E.12', icon: '🔌', count: 3 },
-  { id: 'e13', name: 'E.13', icon: '⚡', count: 3 }
+  { id: 'all', name: 'Wszystkie', icon: '📚', count: 20 },
+  { id: 'inf02', name: 'INF.02 / EE.08', icon: '🖥️', count: 4 },
+  { id: 'inf03', name: 'INF.03 / EE.09', icon: '💾', count: 4 },
+  { id: 'inf04', name: 'INF.04 / E.14', icon: '📱', count: 4 },
+  { id: 'e12', name: 'E.12', icon: '🔌', count: 4 },
+  { id: 'e13', name: 'E.13', icon: '⚡', count: 4 }
 ])
 const testTypes = ref([
   {
     id: 1,
     title: 'Test 40 pytań INF.02 / EE.08',
-    category: 'inf02',
+    category: 'inf02-40',
+    categoryGroup: 'inf02',
     type: 'theoretical',
     questions: 40,
     time: 60,
@@ -26,7 +27,8 @@ const testTypes = ref([
   {
     id: 2,
     title: 'Test 20 pytań INF.02 / EE.08',
-    category: 'inf02',
+    category: 'inf02-20',
+    categoryGroup: 'inf02',
     type: 'theoretical',
     questions: 20,
     time: 30,
@@ -36,7 +38,8 @@ const testTypes = ref([
   {
     id: 3,
     title: 'Losowe pytanie INF.02 / EE.08',
-    category: 'inf02',
+    category: 'inf02-1',
+    categoryGroup: 'inf02',
     type: 'theoretical',
     questions: 1,
     time: 5,
@@ -45,8 +48,20 @@ const testTypes = ref([
   },
   {
     id: 4,
+    title: 'Baza pytań INF.02 / EE.08',
+    category: 'inf02-baza',
+    categoryGroup: 'inf02',
+    type: 'database',
+    questions: 900,
+    time: 0,
+    description: 'Wszystkie pytania z odpowiedziami i wyszukiwarką',
+    topics: ['Wszystkie tematy', 'Z odpowiedziami']
+  },
+  {
+    id: 5,
     title: 'Test 40 pytań INF.03 / EE.09',
-    category: 'inf03',
+    category: 'inf03-40',
+    categoryGroup: 'inf03',
     type: 'theoretical',
     questions: 40,
     time: 60,
@@ -54,9 +69,10 @@ const testTypes = ref([
     topics: ['HTML/CSS', 'JavaScript', 'SQL']
   },
   {
-    id: 5,
+    id: 6,
     title: 'Test 20 pytań INF.03 / EE.09',
-    category: 'inf03',
+    category: 'inf03-20',
+    categoryGroup: 'inf03',
     type: 'theoretical',
     questions: 20,
     time: 30,
@@ -64,9 +80,10 @@ const testTypes = ref([
     topics: ['PHP', 'Bazy danych', 'Aplikacje webowe']
   },
   {
-    id: 6,
+    id: 7,
     title: 'Losowe pytanie INF.03 / EE.09',
-    category: 'inf03',
+    category: 'inf03-1',
+    categoryGroup: 'inf03',
     type: 'theoretical',
     questions: 1,
     time: 5,
@@ -74,9 +91,21 @@ const testTypes = ref([
     topics: ['Losowy temat']
   },
   {
-    id: 7,
+    id: 8,
+    title: 'Baza pytań INF.03 / EE.09',
+    category: 'inf03-baza',
+    categoryGroup: 'inf03',
+    type: 'database',
+    questions: 900,
+    time: 0,
+    description: 'Wszystkie pytania z odpowiedziami i wyszukiwarką',
+    topics: ['Wszystkie tematy', 'Z odpowiedziami']
+  },
+  {
+    id: 9,
     title: 'Test 40 pytań INF.04 / E.14',
-    category: 'inf04',
+    category: 'inf04-40',
+    categoryGroup: 'inf04',
     type: 'theoretical',
     questions: 40,
     time: 60,
@@ -84,9 +113,10 @@ const testTypes = ref([
     topics: ['Programowanie', 'UX/UI', 'Testowanie']
   },
   {
-    id: 8,
+    id: 10,
     title: 'Test 20 pytań INF.04 / E.14',
-    category: 'inf04',
+    category: 'inf04-20',
+    categoryGroup: 'inf04',
     type: 'theoretical',
     questions: 20,
     time: 30,
@@ -94,9 +124,10 @@ const testTypes = ref([
     topics: ['Aplikacje mobilne', 'Testy', 'UI']
   },
   {
-    id: 9,
+    id: 11,
     title: 'Losowe pytanie INF.04 / E.14',
-    category: 'inf04',
+    category: 'inf04-1',
+    categoryGroup: 'inf04',
     type: 'theoretical',
     questions: 1,
     time: 5,
@@ -104,9 +135,21 @@ const testTypes = ref([
     topics: ['Losowy temat']
   },
   {
-    id: 10,
+    id: 12,
+    title: 'Baza pytań INF.04 / E.14',
+    category: 'inf04-baza',
+    categoryGroup: 'inf04',
+    type: 'database',
+    questions: 900,
+    time: 0,
+    description: 'Wszystkie pytania z odpowiedziami i wyszukiwarką',
+    topics: ['Wszystkie tematy', 'Z odpowiedziami']
+  },
+  {
+    id: 13,
     title: 'Test 40 pytań E.12',
-    category: 'e12',
+    category: 'e12-40',
+    categoryGroup: 'e12',
     type: 'theoretical',
     questions: 40,
     time: 60,
@@ -114,9 +157,10 @@ const testTypes = ref([
     topics: ['Montaż', 'Eksploatacja', 'Diagnostyka', 'Sprzęt']
   },
   {
-    id: 11,
+    id: 14,
     title: 'Test 20 pytań E.12',
-    category: 'e12',
+    category: 'e12-20',
+    categoryGroup: 'e12',
     type: 'theoretical',
     questions: 20,
     time: 30,
@@ -124,9 +168,10 @@ const testTypes = ref([
     topics: ['Komputery', 'Urządzenia', 'Naprawa']
   },
   {
-    id: 12,
+    id: 15,
     title: 'Losowe pytanie E.12',
-    category: 'e12',
+    category: 'e12-1',
+    categoryGroup: 'e12',
     type: 'theoretical',
     questions: 1,
     time: 5,
@@ -134,9 +179,21 @@ const testTypes = ref([
     topics: ['Losowy temat']
   },
   {
-    id: 13,
+    id: 16,
+    title: 'Baza pytań E.12',
+    category: 'e12-baza',
+    categoryGroup: 'e12',
+    type: 'database',
+    questions: 900,
+    time: 0,
+    description: 'Wszystkie pytania z odpowiedziami i wyszukiwarką',
+    topics: ['Wszystkie tematy', 'Z odpowiedziami']
+  },
+  {
+    id: 17,
     title: 'Test 40 pytań E.13',
-    category: 'e13',
+    category: 'e13-40',
+    categoryGroup: 'e13',
     type: 'theoretical',
     questions: 40,
     time: 60,
@@ -144,9 +201,10 @@ const testTypes = ref([
     topics: ['Programowanie', 'Mechatronika', 'Systemy', 'Eksploatacja']
   },
   {
-    id: 14,
+    id: 18,
     title: 'Test 20 pytań E.13',
-    category: 'e13',
+    category: 'e13-20',
+    categoryGroup: 'e13',
     type: 'theoretical',
     questions: 20,
     time: 30,
@@ -154,21 +212,33 @@ const testTypes = ref([
     topics: ['Urządzenia', 'Systemy', 'Programowanie']
   },
   {
-    id: 15,
+    id: 19,
     title: 'Losowe pytanie E.13',
-    category: 'e13',
+    category: 'e13-1',
+    categoryGroup: 'e13',
     type: 'theoretical',
     questions: 1,
     time: 5,
     description: 'Jedno losowe pytanie z mechatroniki',
     topics: ['Losowy temat']
+  },
+  {
+    id: 20,
+    title: 'Baza pytań E.13',
+    category: 'e13-baza',
+    categoryGroup: 'e13',
+    type: 'database',
+    questions: 900,
+    time: 0,
+    description: 'Wszystkie pytania z odpowiedziami i wyszukiwarką',
+    topics: ['Wszystkie tematy', 'Z odpowiedziami']
   }
 ])
 
 const filteredTests = computed(() => {
   let result = testTypes.value
   if (selectedCategory.value !== 'all') {
-    result = result.filter(test => test.category === selectedCategory.value)
+    result = result.filter(test => test.categoryGroup === selectedCategory.value)
   }
   if (searchQuery.value) {
     const query = searchQuery.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')

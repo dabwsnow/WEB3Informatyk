@@ -7,6 +7,7 @@ import { computed, onMounted } from 'vue'
 
 const route = useRoute()
 const isHomePage = computed(() => route.path === '/')
+const showLayout = computed(() => route.meta.showLayout !== false)
 
 onMounted(() => {
   const savedTheme = 'dark'
@@ -16,14 +17,14 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <Header />
-    <main class="main-content">
-      <Home v-if="isHomePage" />
-      <div class="page-content" :class="{ 'home-page': isHomePage }">
-        <router-view v-if="!isHomePage" />
+    <Header v-if="showLayout" />
+    <main class="main-content" :class="{ 'no-layout': !showLayout }">
+      <Home v-if="isHomePage && showLayout" />
+      <div class="page-content" :class="{ 'home-page': isHomePage, 'full-page': !showLayout }">
+        <router-view v-if="!isHomePage || !showLayout" />
       </div>
     </main>
-    <Footer />
+    <Footer v-if="showLayout" />
   </div>
 </template>
 
@@ -65,6 +66,10 @@ body {
   align-items: center;
 }
 
+.main-content.no-layout {
+  padding-top: 0;
+}
+
 .page-content {
   width: 100%;
   max-width: 1400px;
@@ -76,6 +81,11 @@ body {
 
 .page-content.home-page {
   display: none;
+}
+
+.page-content.full-page {
+  max-width: 100%;
+  padding: 0;
 }
 
 /* Scrollbar Styling */
@@ -112,14 +122,27 @@ body {
   .main-content {
     padding-top: 160px;
   }
+  
+  .main-content.no-layout {
+    padding-top: 0;
+  }
+  
   .page-content {
     padding: 0 16px;
+  }
+  
+  .page-content.full-page {
+    padding: 0;
   }
 }
 
 @media (max-width: 480px) {
   .main-content {
     padding-top: 140px;
+  }
+  
+  .main-content.no-layout {
+    padding-top: 0;
   }
 }
 </style>
