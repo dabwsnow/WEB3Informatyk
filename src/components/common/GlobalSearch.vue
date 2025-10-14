@@ -14,11 +14,11 @@ const searchData = {
     { id: 1, question: 'Który protokół jest używany do bezpiecznego przesyłania plików?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
     { id: 2, question: 'Jaka jest domyślna maska podsieci dla klasy C?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
     { id: 3, question: 'Który port używa protokół HTTPS?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
-    { id: 4, question: 'Która właściwość CSS służy do zmiany koloru tekstu?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09', type: 'question' },
-    { id: 5, question: 'Która metoda HTTP jest używana do wysyłania danych formularza?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09', type: 'question' },
-    { id: 6, question: 'Co oznacza SQL?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09', type: 'question' },
-    { id: 7, question: 'Która funkcja w JavaScript służy do wyświetlania komunikatu w konsoli?', category: 'inf04-baza', categoryName: 'INF.04 / E.14', type: 'question' },
-    { id: 8, question: 'Co to jest JSON?', category: 'inf04-baza', categoryName: 'INF.04 / E.14', type: 'question' },
+    { id: 4, question: 'Która właściwość CSS służy do zmiany koloru tekstu?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
+    { id: 5, question: 'Która metoda HTTP jest używana do wysyłania danych formularza?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
+    { id: 6, question: 'Co oznacza SQL?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
+    { id: 7, question: 'Która funkcja w JavaScript służy do wyświetlania komunikatu w konsoli?', category: 'inf04-baza', categoryName: 'INF.04', type: 'question' },
+    { id: 8, question: 'Co to jest JSON?', category: 'inf04-baza', categoryName: 'INF.04', type: 'question' },
     { id: 9, question: 'Która magistrala jest używana do podłączania dysków SSD?', category: 'e12-baza', categoryName: 'E.12', type: 'question' },
     { id: 10, question: 'Ile pinów ma złącze procesora Intel LGA 1200?', category: 'e12-baza', categoryName: 'E.12', type: 'question' },
     { id: 11, question: 'Jaki jest zakres adresów IP klasy A?', category: 'e13-baza', categoryName: 'E.13', type: 'question' },
@@ -29,10 +29,10 @@ const searchData = {
     { id: 2, title: 'Test 20 pytań INF.02 / EE.08', category: 'inf02-20', categoryName: 'INF.02 / EE.08', type: 'test', questions: 20 },
     { id: 3, title: 'Losowe pytanie INF.02 / EE.08', category: 'inf02-1', categoryName: 'INF.02 / EE.08', type: 'test', questions: 1 },
     { id: 4, title: 'Baza pytań INF.02 / EE.08', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'database', questions: 900 },
-    { id: 5, title: 'Test 40 pytań INF.03 / EE.09', category: 'inf03-40', categoryName: 'INF.03 / EE.09', type: 'test', questions: 40 },
-    { id: 6, title: 'Test 20 pytań INF.03 / EE.09', category: 'inf03-20', categoryName: 'INF.03 / EE.09', type: 'test', questions: 20 },
-    { id: 7, title: 'Losowe pytanie INF.03 / EE.09', category: 'inf03-1', categoryName: 'INF.03 / EE.09', type: 'test', questions: 1 },
-    { id: 8, title: 'Baza pytań INF.03 / EE.09', category: 'inf03-baza', categoryName: 'INF.03 / EE.09', type: 'database', questions: 900 }
+    { id: 5, title: 'Test 40 pytań INF.03 / EE.09 / E.14', category: 'inf03-40', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 40 },
+    { id: 6, title: 'Test 20 pytań INF.03 / EE.09 / E.14', category: 'inf03-20', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 20 },
+    { id: 7, title: 'Losowe pytanie INF.03 / EE.09 / E.14', category: 'inf03-1', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 1 },
+    { id: 8, title: 'Baza pytań INF.03 / EE.09 / E.14', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'database', questions: 900 }
   ]
 }
 
@@ -126,7 +126,6 @@ onUnmounted(() => {
             <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </button>
-        <kbd class="search-kbd">Ctrl K</kbd>
       </div>
 
       <transition name="dropdown">
@@ -200,7 +199,6 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .global-search-container {
   position: relative;

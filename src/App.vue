@@ -1,7 +1,7 @@
 <script setup>
-import Header from './components/Header.vue'
-import Home from './components/Home.vue'
-import Footer from './components/Footer.vue'
+import Header from './components/common/Header.vue'
+import Home from './components/common/Home.vue'
+import Footer from './components/common/Footer.vue'
 import { useRoute } from 'vue-router'
 import { computed, onMounted } from 'vue'
 

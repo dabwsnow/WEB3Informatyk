@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import GlobalSearch from './GlobalSearch.vue'
 import UserMenu from './UserMenu.vue'
@@ -152,7 +152,20 @@ onUnmounted(() => {
             </div>
           </button>
 
-          <router-link to="/login" class="nav-link nav-cta" :class="{ active: $route.path === '/login' }" @click="isMobileMenuOpen = false">
+          <!-- Если пользователь залогинен - показываем UserMenu, иначе кнопку Zaloguj -->
+          <UserMenu 
+            v-if="isLoggedIn" 
+            :user="currentUser" 
+            @logout="handleLogout"
+          />
+          
+          <router-link 
+            v-else
+            to="/login" 
+            class="nav-link nav-cta" 
+            :class="{ active: $route.path === '/login' }" 
+            @click="isMobileMenuOpen = false"
+          >
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

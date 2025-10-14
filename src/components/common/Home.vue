@@ -13,21 +13,21 @@ const categories = ref([
     subtitle: 'Sprzęt, systemy, sieci',
     description: 'Administracja i eksploatacja systemów komputerowych, urządzeń peryferyjnych i lokalnych sieci komputerowych',
     icon: '🖥️',
-    link: '/tests/inf02'
+    link: 'tests/inf02-40'
   },
   {
-    title: 'INF.03 / EE.09',
+    title: 'INF.03 / EE.09 / E.14',
     subtitle: 'Programowanie, bazy danych',
     description: 'Tworzenie aplikacji internetowych, baz danych oraz administrowanie bazami danych',
     icon: '💾',
-    link: '/tests/inf03'
+    link: '/tests/inf03-40'
   },
   {
     title: 'INF.04',
     subtitle: 'Projektowanie aplikacji',
     description: 'Projektowanie, programowanie i testowanie aplikacji desktopowych i mobilnych',
     icon: '📱',
-    link: '/tests/inf04'
+    link: '/tests/inf04-40'
   }
 ])
 
@@ -35,7 +35,6 @@ const features = ref([
   { title: 'Testy Online', description: 'Tysiące pytań z oficjalnych arkuszy egzaminacyjnych', icon: '✍️' },
   { title: 'Arkusze Praktyczne', description: 'Kompletne rozwiązania zadań praktycznych krok po kroku', icon: '🔧' },
   { title: 'Nauka Teorii', description: 'Materiały edukacyjne i dokumentacja techniczna', icon: '📚' },
-  { title: 'Kalkulatory', description: 'Narzędzia pomocnicze do obliczeń i konwersji', icon: '🧮' }
 ])
 
 const isVisible = ref(false)

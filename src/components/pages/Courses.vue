@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import QualificationList from './QualificationList.vue'
+import QualificationList from '../tests/QualificationList.vue'
 
 const qualifications = ref([
   {
@@ -23,7 +23,7 @@ const qualifications = ref([
   },
   {
     id: 'inf03',
-    name: 'INF.03 / EE.09',
+    name: 'INF.03 / EE.09 / E.14',
     title: 'Tworzenie aplikacji internetowych',
     icon: '💾',
     color: '#10b981',

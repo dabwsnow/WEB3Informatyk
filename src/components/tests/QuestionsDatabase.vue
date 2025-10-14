@@ -1,198 +1,47 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import { api } from '../../services/api'
 
 const route = useRoute()
 const category = computed(() => route.params.category)
 const searchQuery = ref('')
+const currentDatabase = ref(null)
+const loading = ref(true)
+const error = ref(null)
+const highlightedQuestionId = ref(null)
 
-// База вопросов для каждой категории
-const questionsDatabase = {
+// Маппинг категорий
+const categoryMeta = {
   'inf02-baza': {
     name: 'INF.02 / EE.08',
     title: 'Baza pytań - Administracja i eksploatacja systemów',
-    icon: '🖥️',
-    questions: [
-      {
-        id: 1,
-        question: 'Który protokół jest używany do bezpiecznego przesyłania plików?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'FTP', correct: false },
-          { id: 'b', text: 'SFTP', correct: true },
-          { id: 'c', text: 'HTTP', correct: false },
-          { id: 'd', text: 'SMTP', correct: false }
-        ],
-        explanation: 'SFTP (SSH File Transfer Protocol) zapewnia bezpieczne szyfrowane połączenie do przesyłania plików.'
-      },
-      {
-        id: 2,
-        question: 'Jaka jest domyślna maska podsieci dla klasy C?',
-        image: null,
-        answers: [
-          { id: 'a', text: '255.0.0.0', correct: false },
-          { id: 'b', text: '255.255.0.0', correct: false },
-          { id: 'c', text: '255.255.255.0', correct: true },
-          { id: 'd', text: '255.255.255.255', correct: false }
-        ],
-        explanation: 'Klasa C ma domyślną maskę 255.255.255.0, co daje 254 użyteczne adresy host w sieci.'
-      },
-      {
-        id: 3,
-        question: 'Który port używa protokół HTTPS?',
-        image: null,
-        answers: [
-          { id: 'a', text: '80', correct: false },
-          { id: 'b', text: '443', correct: true },
-          { id: 'c', text: '8080', correct: false },
-          { id: 'd', text: '22', correct: false }
-        ],
-        explanation: 'HTTPS używa portu 443 do bezpiecznej komunikacji HTTP z szyfrowaniem SSL/TLS.'
-      }
-    ]
+    icon: '🖥️'
   },
   'inf03-baza': {
-    name: 'INF.03 / EE.09',
+    name: 'INF.03 / EE.09 / E.14',
     title: 'Baza pytań - Tworzenie aplikacji webowych',
-    icon: '💾',
-    questions: [
-      {
-        id: 1,
-        question: 'Która właściwość CSS służy do zmiany koloru tekstu?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'background-color', correct: false },
-          { id: 'b', text: 'color', correct: true },
-          { id: 'c', text: 'text-color', correct: false },
-          { id: 'd', text: 'font-color', correct: false }
-        ],
-        explanation: 'Właściwość "color" w CSS służy do ustawiania koloru tekstu elementu.'
-      },
-      {
-        id: 2,
-        question: 'Która metoda HTTP jest używana do wysyłania danych formularza?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'GET', correct: false },
-          { id: 'b', text: 'POST', correct: true },
-          { id: 'c', text: 'PUT', correct: false },
-          { id: 'd', text: 'DELETE', correct: false }
-        ],
-        explanation: 'POST jest standardową metodą do wysyłania danych formularza.'
-      },
-      {
-        id: 3,
-        question: 'Co oznacza SQL?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'Structured Query Language', correct: true },
-          { id: 'b', text: 'Simple Query Language', correct: false },
-          { id: 'c', text: 'Standard Question Language', correct: false },
-          { id: 'd', text: 'System Query List', correct: false }
-        ],
-        explanation: 'SQL to Structured Query Language - język strukturalnych zapytań używany do zarządzania bazami danych.'
-      }
-    ]
+    icon: '💾'
   },
   'inf04-baza': {
-    name: 'INF.04 / E.14',
+    name: 'INF.04',
     title: 'Baza pytań - Programowanie aplikacji',
-    icon: '📱',
-    questions: [
-      {
-        id: 1,
-        question: 'Która funkcja w JavaScript służy do wyświetlania komunikatu w konsoli?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'alert()', correct: false },
-          { id: 'b', text: 'console.log()', correct: true },
-          { id: 'c', text: 'print()', correct: false },
-          { id: 'd', text: 'display()', correct: false }
-        ],
-        explanation: 'console.log() wyświetla informacje w konsoli przeglądarki.'
-      },
-      {
-        id: 2,
-        question: 'Co to jest JSON?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'JavaScript Object Notation', correct: true },
-          { id: 'b', text: 'Java Standard Object Notation', correct: false },
-          { id: 'c', text: 'JavaScript Ordered Network', correct: false },
-          { id: 'd', text: 'Java Source Object Node', correct: false }
-        ],
-        explanation: 'JSON to lekki format wymiany danych, łatwy do odczytu zarówno dla ludzi jak i maszyn.'
-      }
-    ]
+    icon: '📱'
   },
   'e12-baza': {
     name: 'E.12',
     title: 'Baza pytań - Montaż i eksploatacja komputerów',
-    icon: '🔌',
-    questions: [
-      {
-        id: 1,
-        question: 'Która magistrala jest używana do podłączania dysków SSD?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'PCI', correct: false },
-          { id: 'b', text: 'AGP', correct: false },
-          { id: 'c', text: 'SATA', correct: true },
-          { id: 'd', text: 'ISA', correct: false }
-        ],
-        explanation: 'SATA to standard interfejsu do podłączania dysków.'
-      },
-      {
-        id: 2,
-        question: 'Ile pinów ma złącze procesora Intel LGA 1200?',
-        image: null,
-        answers: [
-          { id: 'a', text: '1150', correct: false },
-          { id: 'b', text: '1151', correct: false },
-          { id: 'c', text: '1200', correct: true },
-          { id: 'd', text: '1700', correct: false }
-        ],
-        explanation: 'LGA 1200 to gniazdo z 1200 pinami.'
-      }
-    ]
+    icon: '🔌'
   },
   'e13-baza': {
     name: 'E.13',
     title: 'Baza pytań - Projektowanie sieci',
-    icon: '⚡',
-    questions: [
-      {
-        id: 1,
-        question: 'Jaki jest zakres adresów IP klasy A?',
-        image: null,
-        answers: [
-          { id: 'a', text: '1.0.0.0 - 126.255.255.255', correct: true },
-          { id: 'b', text: '128.0.0.0 - 191.255.255.255', correct: false },
-          { id: 'c', text: '192.0.0.0 - 223.255.255.255', correct: false },
-          { id: 'd', text: '224.0.0.0 - 239.255.255.255', correct: false }
-        ],
-        explanation: 'Klasa A obejmuje adresy od 1.0.0.0 do 126.255.255.255.'
-      },
-      {
-        id: 2,
-        question: 'Który protokół służy do automatycznego przydzielania adresów IP?',
-        image: null,
-        answers: [
-          { id: 'a', text: 'DNS', correct: false },
-          { id: 'b', text: 'DHCP', correct: true },
-          { id: 'c', text: 'FTP', correct: false },
-          { id: 'd', text: 'SMTP', correct: false }
-        ],
-        explanation: 'DHCP automatycznie przydziela adresy IP.'
-      }
-    ]
+    icon: '⚡'
   }
 }
 
-const currentDatabase = computed(() => questionsDatabase[category.value] || null)
-
 const filteredQuestions = computed(() => {
-  if (!currentDatabase.value) return []
+  if (!currentDatabase.value || !currentDatabase.value.questions) return []
   
   if (!searchQuery.value.trim()) {
     return currentDatabase.value.questions
@@ -208,10 +57,96 @@ const filteredQuestions = computed(() => {
     return questionText.includes(query) || answersText.includes(query) || explanationText.includes(query)
   })
 })
+
+// Функция прокрутки к вопросу
+const scrollToQuestion = (questionId) => {
+  nextTick(() => {
+    const element = document.getElementById(`question-${questionId}`)
+    if (element) {
+      // Прокручиваем с отступом сверху
+      const offset = 100
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - offset
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+      
+      // Подсвечиваем вопрос
+      highlightedQuestionId.value = questionId
+      
+      // Убираем подсветку через 3 секунды
+      setTimeout(() => {
+        highlightedQuestionId.value = null
+      }, 3000)
+    }
+  })
+}
+
+// Загружаем данные при монтировании
+onMounted(async () => {
+  try {
+    const meta = categoryMeta[category.value]
+    if (!meta) {
+      error.value = 'Kategoria nie znaleziona'
+      loading.value = false
+      return
+    }
+
+    const data = await api.getQuestionDatabase(category.value)
+    
+    // Преобразуем формат для совместимости
+    const questions = data.questions.map(q => ({
+      id: q.id,
+      question: q.question,
+      image: q.image,
+      answers: q.answers.map(a => ({
+        id: a.id,
+        text: a.text,
+        correct: a.id === q.correctAnswer
+      })),
+      explanation: q.explanation
+    }))
+
+    currentDatabase.value = {
+      name: meta.name,
+      title: meta.title,
+      icon: meta.icon,
+      questions: questions
+    }
+    
+    // Проверяем, есть ли query параметр с ID вопроса
+    const questionId = route.query.question
+    if (questionId) {
+      scrollToQuestion(parseInt(questionId))
+    }
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <template>
-  <div v-if="currentDatabase" class="database-view">
+  <!-- Индикатор загрузки -->
+  <div v-if="loading" class="loading-view">
+    <div class="spinner"></div>
+    <p>Ładowanie bazy pytań...</p>
+  </div>
+
+  <!-- Ошибка -->
+  <div v-else-if="error" class="error-view">
+    <h1>Błąd</h1>
+    <p>{{ error }}</p>
+    <button @click="$router.push('/tests')" class="back-button">
+      Wróć do listy testów
+    </button>
+  </div>
+
+  <!-- База вопросов -->
+  <div v-else-if="currentDatabase" class="database-view">
     <div class="database-header">
       <div class="header-info">
         <div class="category-badge">
@@ -252,7 +187,9 @@ const filteredQuestions = computed(() => {
       <div
         v-for="(question, index) in filteredQuestions"
         :key="question.id"
+        :id="`question-${question.id}`"
         class="question-card"
+        :class="{ 'highlighted': highlightedQuestionId === question.id }"
       >
         <div class="question-number-badge">
           Pytanie {{ index + 1 }}
@@ -312,6 +249,7 @@ const filteredQuestions = computed(() => {
     </button>
   </div>
 
+  <!-- Категория не найдена -->
   <div v-else class="error-view">
     <h1>Nie znaleziono bazy pytań</h1>
     <p>Kategoria "{{ category }}" nie istnieje</p>
@@ -457,11 +395,46 @@ const filteredQuestions = computed(() => {
   border-radius: 20px;
   padding: 32px;
   transition: all 0.3s ease;
+  scroll-margin-top: 100px;
 }
 
 .question-card:hover {
   border-color: rgba(102, 126, 234, 0.3);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+/* Анимация подсветки вопроса */
+.question-card.highlighted {
+  animation: highlight-pulse 2s ease-in-out;
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2) !important;
+}
+
+@keyframes highlight-pulse {
+  0% {
+    background: var(--color-bg, #fff);
+    transform: scale(1);
+  }
+  10% {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.02);
+  }
+  20% {
+    background: rgba(102, 126, 234, 0.15);
+  }
+  40% {
+    background: rgba(102, 126, 234, 0.1);
+  }
+  60% {
+    background: rgba(102, 126, 234, 0.05);
+  }
+  80% {
+    background: rgba(102, 126, 234, 0.02);
+  }
+  100% {
+    background: var(--color-bg, #fff);
+    transform: scale(1);
+  }
 }
 
 .question-number-badge {
@@ -483,15 +456,20 @@ const filteredQuestions = computed(() => {
   line-height: 1.5;
 }
 
+/* Стили для изображений */
 .question-image {
   margin-bottom: 24px;
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid var(--color-border, #e0e0e0);
+  background: #f9f9f9;
 }
 
 .question-image img {
   width: 100%;
   height: auto;
+  max-height: 400px;
+  object-fit: contain;
   display: block;
 }
 
@@ -654,6 +632,38 @@ const filteredQuestions = computed(() => {
   margin-bottom: 30px;
 }
 
+.loading-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(102, 126, 234, 0.1);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-view p {
+  font-size: 1.1rem;
+  color: var(--color-subtext, #666);
+}
+
+/* Плавная прокрутка */
+html {
+  scroll-behavior: smooth;
+}
+
 @media (max-width: 768px) {
   .database-view {
     padding: 30px 16px;
@@ -678,6 +688,10 @@ const filteredQuestions = computed(() => {
 
   .question-text {
     font-size: 1.1rem;
+  }
+
+  .question-image img {
+    max-height: 300px;
   }
 
   .answer-item {

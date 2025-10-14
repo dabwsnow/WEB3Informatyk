@@ -43,13 +43,6 @@ const props = defineProps({
         </div>
       </div>
       <div class="archive-actions">
-        <button class="action-btn view-btn">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"/>
-            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2"/>
-          </svg>
-          Arkusz
-        </button>
         <button class="action-btn download-btn" :style="{ background: qualColor, borderColor: qualColor }">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

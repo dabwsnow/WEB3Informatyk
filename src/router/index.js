@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tests from '../views/Tests.vue'
-import Courses from '../views/Courses.vue'
-import Home from '../components/Home.vue'
-import TestView from '../views/TestView.vue'
-import QuestionsDatabase from '../views/QuestionsDatabase.vue'
-import Login from '../views/Login.vue'
-import Profile from '../components/Profile.vue'
+import Tests from '../components/tests/Tests.vue'
+import Courses from '../components/pages/Courses.vue'
+import Home from '../components/common/Home.vue'
+import TestView from '../components/tests/TestView.vue'
+import QuestionsDatabase from '../components/tests/QuestionsDatabase.vue'
+import Login from '../components/views/auth/Login.vue'
+import Profile from '../components/pages/Profile.vue'
+import Admin from '../components/admin/AdminPanel.vue'
+import ComingSoon from '../components/pages/ComingSoon.vue'
+import About from '../components/pages/About.vue'
+import Contact from '../components/pages/Contact.vue'
+import Terms from '../components/pages/Terms.vue'
+import Privacy from '../components/pages/Privacy.vue'
 
 const routes = [
   { 
@@ -52,46 +58,40 @@ const routes = [
     component: Profile,
     meta: { showLayout: true }
   },
-  { 
-    path: '/settings', 
-    name: 'Settings',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Ustawienia - Coming Soon</h1></div>' },
-    meta: { showLayout: true }
+  {
+    path: '/panel',
+    name: 'AdminPanel',
+    component: Admin,
+    meta: { showLayout: true, requiresAdmin: true }
   },
-  { 
-    path: '/materials', 
-    name: 'Materials',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Materiały - Coming Soon</h1></div>' },
-    meta: { showLayout: true }
-  },
-  { 
-    path: '/tools', 
-    name: 'Tools',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Kalkulatory - Coming Soon</h1></div>' },
+  {
+    path: '/coming-soon',
+    name: 'ComingSoon',
+    component: ComingSoon,
     meta: { showLayout: true }
   },
   { 
     path: '/about', 
     name: 'About',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>O projekcie - Coming Soon</h1></div>' },
+    component: About,
     meta: { showLayout: true }
   },
   { 
     path: '/contact', 
     name: 'Contact',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Kontakt - Coming Soon</h1></div>' },
+    component: Contact,
     meta: { showLayout: true }
   },
   { 
     path: '/terms', 
     name: 'Terms',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Regulamin - Coming Soon</h1></div>' },
+    component: Terms,
     meta: { showLayout: true }
   },
   { 
     path: '/privacy', 
     name: 'Privacy',
-    component: { template: '<div style="padding: 100px 20px; text-align: center;"><h1>Polityka prywatności - Coming Soon</h1></div>' },
+    component: Privacy,
     meta: { showLayout: true }
   },
 ]

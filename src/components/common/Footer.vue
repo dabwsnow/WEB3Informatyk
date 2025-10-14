@@ -467,16 +467,14 @@ const currentYear = new Date().getFullYear()
 
 const footerLinks = ref({
   categories: [
-    { name: 'INF.02 / EE.08', path: '/tests/inf02' },
-    { name: 'INF.03 / EE.09', path: '/tests/inf03' },
-    { name: 'INF.04', path: '/tests/inf04' }
+    { name: 'INF.02 / EE.08', path: '/tests/inf02-40' },
+    { name: 'INF.03 / EE.09', path: '/tests/inf03-40' },
+    { name: 'INF.04', path: '/tests/inf04-40' }
   ],
   resources: [
     { name: 'Testy Online', path: '/tests' },
     { name: 'Arkusze Praktyczne', path: '/courses' },
-    { name: 'Materiały', path: '/materials' },
-    { name: 'Kalkulatory', path: '/tools' }
-  ],
+    { name: 'Materiały', path: '/materials' },  ],
   about: [
     { name: 'O projekcie', path: '/about' },
     { name: 'Kontakt', path: '/contact' },
@@ -515,7 +513,7 @@ const socialLinks = ref([
 const stats = ref([
   { number: '2000+', label: 'Pytań' },
   { number: '50+', label: 'Arkuszy' },
-  { number: '10k+', label: 'Użytkowników' },
+  { number: '2k+', label: 'Użytkowników' },
   { number: '95%', label: 'Zdawalność' }
 ])
 </script>
@@ -620,7 +618,7 @@ const stats = ref([
           <div class="copyright">
             <p>© {{ currentYear }} WEB3 INFORMATYK. Wszystkie prawa zastrzeżone.</p>
             <p class="made-with">
-              Stworzone z <span class="heart">❤️</span> dla przyszłych informatyków
+              Stworzone z <span class="heart">❤️</span> dla przyszłych informatyków. prod. Teb 
             </p>
           </div>
 

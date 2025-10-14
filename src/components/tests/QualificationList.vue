@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import ArchiveCards from '../components/card/ArchiveCards.vue'
+import ArchiveCards from '../card/ArchiveCards.vue'
 
 const props = defineProps({
   qualifications: {
