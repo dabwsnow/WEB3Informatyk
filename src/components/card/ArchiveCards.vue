@@ -18,6 +18,7 @@ const props = defineProps({
       v-for="archive in archives"
       :key="archive.id"
       class="archive-item"
+      :style="{ '--qual-color': qualColor }"
     >
       <div class="archive-info">
         <div class="archive-header">
@@ -42,25 +43,26 @@ const props = defineProps({
           </span>
         </div>
       </div>
+      
       <div class="archive-actions">
-        <button class="action-btn download-btn" :style="{ background: qualColor, borderColor: qualColor }">
+        <button class="action-btn download-btn">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Pobierz
+          Pobierz arkusz
         </button>
-        <button class="action-btn view-solved-btn">
+        <button class="action-btn view-btn">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"/>
             <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2"/>
           </svg>
-          Arkusz Rozwiązany
+          Zobacz rozwiązanie
         </button>
-        <button class="action-btn download-solved-btn" :style="{ background: qualColor, borderColor: qualColor }">
+        <button class="action-btn download-solution-btn">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Pobierz Rozwiązany
+          Pobierz rozwiązanie
         </button>
       </div>
     </div>
@@ -69,28 +71,28 @@ const props = defineProps({
 
 <style scoped>
 .archives-list {
-  margin-top: 20px;
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .archive-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background: var(--color-bg-hover, #f5f5f5);
-  border: 1px solid var(--color-border, #e0e0e0);
-  border-radius: 14px;
+  padding: 24px;
+  background: var(--color-bg-hover);
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
   transition: all 0.3s ease;
-  gap: 20px;
+  gap: 24px;
 }
 
 .archive-item:hover {
-  background: rgba(102, 126, 234, 0.05);
-  border-color: rgba(102, 126, 234, 0.3);
+  border-color: var(--qual-color);
   transform: translateX(4px);
+  box-shadow: 0 4px 12px var(--color-shadow);
 }
 
 .archive-info {
@@ -102,22 +104,23 @@ const props = defineProps({
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .archive-code {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-text, #333333);
+  color: var(--color-text);
   font-family: 'Courier New', monospace;
 }
 
 .archive-badge {
-  padding: 4px 10px;
-  background: rgba(102, 126, 234, 0.15);
-  color: #667eea;
-  border-radius: 6px;
+  padding: 4px 12px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -125,7 +128,6 @@ const props = defineProps({
 .archive-meta {
   display: flex;
   gap: 20px;
-  color: var(--color-subtext, #666666);
   font-size: 0.9rem;
   flex-wrap: wrap;
 }
@@ -135,76 +137,129 @@ const props = defineProps({
   display: flex;
   align-items: center;
   gap: 6px;
+  color: var(--color-subtext);
 }
 
 .meta-icon {
   width: 16px;
   height: 16px;
+  stroke: var(--color-subtext);
 }
 
 .archive-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 10px 18px;
+  padding: 10px 16px;
   border-radius: 10px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid;
+  border: 2px solid;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.view-btn,
-.view-solved-btn {
-  background: var(--color-bg, #ffffff);
-  color: var(--color-text, #333333);
-  border-color: var(--color-border, #e0e0e0);
-}
-
-.view-btn:hover,
-.view-solved-btn:hover {
-  background: var(--color-bg-hover, #f5f5f5);
-}
-
-.download-btn,
-.download-solved-btn {
+.download-btn {
+  background: var(--qual-color);
   color: white;
+  border-color: var(--qual-color);
 }
 
-.download-btn:hover,
-.download-solved-btn:hover {
+.download-btn .btn-icon {
+  stroke: white;
+}
+
+.download-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--qual-color);
+  opacity: 0.9;
+}
+
+.view-btn {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.view-btn .btn-icon {
+  stroke: var(--color-text);
+}
+
+.view-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--qual-color);
+  color: var(--qual-color);
+}
+
+.view-btn:hover .btn-icon {
+  stroke: var(--qual-color);
+}
+
+.download-solution-btn {
+  background: var(--color-bg);
+  color: var(--qual-color);
+  border-color: var(--qual-color);
+}
+
+.download-solution-btn .btn-icon {
+  stroke: var(--qual-color);
+}
+
+.download-solution-btn:hover {
+  background: var(--qual-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--qual-color);
+}
+
+.download-solution-btn:hover .btn-icon {
+  stroke: white;
 }
 
 .btn-icon {
   width: 18px;
   height: 18px;
+  transition: stroke 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .archive-item {
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px;
   }
 
   .archive-actions {
     width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .archive-item {
+    padding: 20px;
+  }
+
+  .archive-actions {
     flex-direction: column;
   }
 
   .action-btn {
     width: 100%;
-    justify-content: center;
   }
 }
 

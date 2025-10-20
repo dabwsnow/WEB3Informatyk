@@ -1,9 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-import QualificationList from '../tests/QualificationList.vue'
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import ArchiveCards from '../card/ArchiveCards.vue'
 
-const qualifications = ref([
-  {
+const route = useRoute()
+const router = useRouter()
+
+// Все профили с данными
+const profiles = {
+  'inf02': {
     id: 'inf02',
     name: 'INF.02',
     title: 'Administracja systemami komputerowymi',
@@ -19,7 +24,7 @@ const qualifications = ref([
       { id: 5, code: 'INF.02-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 4120 },
     ]
   },
-  {
+  'ee08': {
     id: 'ee08',
     name: 'EE.08',
     title: 'Montaż i eksploatacja systemów komputerowych',
@@ -33,7 +38,7 @@ const qualifications = ref([
       { id: 3, code: 'EE.08-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 6123 },
     ]
   },
-  {
+  'e12': {
     id: 'e12',
     name: 'E.12',
     title: 'Montaż i eksploatacja komputerów osobistych',
@@ -46,7 +51,7 @@ const qualifications = ref([
       { id: 2, code: 'E.12-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4234 },
     ]
   },
-  {
+  'e13': {
     id: 'e13',
     name: 'E.13',
     title: 'Projektowanie lokalnych sieci komputerowych',
@@ -59,7 +64,7 @@ const qualifications = ref([
       { id: 2, code: 'E.13-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4012 },
     ]
   },
-  {
+  'inf03': {
     id: 'inf03',
     name: 'INF.03',
     title: 'Tworzenie i administrowanie stronami',
@@ -75,7 +80,7 @@ const qualifications = ref([
       { id: 5, code: 'INF.03-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 5234 },
     ]
   },
-  {
+  'ee09': {
     id: 'ee09',
     name: 'EE.09',
     title: 'Programowanie aplikacji internetowych',
@@ -89,7 +94,7 @@ const qualifications = ref([
       { id: 3, code: 'EE.09-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 7234 },
     ]
   },
-  {
+  'e14': {
     id: 'e14',
     name: 'E.14',
     title: 'Tworzenie aplikacji internetowych i baz danych',
@@ -102,7 +107,7 @@ const qualifications = ref([
       { id: 2, code: 'E.14-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 7123 },
     ]
   },
-  {
+  'inf04': {
     id: 'inf04',
     name: 'INF.04',
     title: 'Projektowanie, programowanie i testowanie aplikacji',
@@ -117,279 +122,272 @@ const qualifications = ref([
       { id: 4, code: 'INF.04-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 1890 },
     ]
   }
-])
+}
+
+const profile = computed(() => {
+  const profileId = route.params.profileId
+  return profiles[profileId] || null
+})
+
+const goBack = () => {
+  router.push('/courses')
+}
 </script>
 
 <template>
-  <div class="courses-page">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">Arkusze praktyczne</h1>
-        <p class="page-subtitle">Pobierz i przećwicz zadania z prawdziwych egzaminów zawodowych</p>
-      </div>
-      <div class="header-stats">
-        <div class="stat-card">
-          <div class="stat-number">{{ qualifications.length }}</div>
-          <div class="stat-label">Profili</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">{{ qualifications.reduce((sum, q) => sum + q.archives.length, 0) }}</div>
-          <div class="stat-label">Arkuszy</div>
-        </div>
-      </div>
-    </div>
+  <div v-if="profile" class="profile-page">
+    <button class="back-btn" @click="goBack">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M19 12H5m7-7l-7 7 7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Wróć do listy
+    </button>
 
-    <div class="info-card">
-      <div class="info-icon">📋</div>
-      <div class="info-content">
-        <h3>Część praktyczna egzaminu zawodowego</h3>
-        <div class="info-details">
-          <div class="info-item">
-            <span class="info-label">⏱️ Czas trwania:</span>
-            <span class="info-value">120-240 minut</span>
+    <div class="profile-hero" :style="{ '--profile-color': profile.color }">
+      <div class="hero-content">
+        <div class="hero-icon">{{ profile.icon }}</div>
+        <div class="hero-text">
+          <div class="hero-header">
+            <h1 class="hero-title">{{ profile.name }}</h1>
+            <span class="hero-category">{{ profile.category }}</span>
           </div>
-          <div class="info-item">
-            <span class="info-label">✅ Wymagane minimum:</span>
-            <span class="info-value">75% punktów</span>
-          </div>
+          <p class="hero-subtitle">{{ profile.title }}</p>
+          <p class="hero-description">{{ profile.description }}</p>
         </div>
-        <p class="info-description">Każdy arkusz zawiera zadania praktyczne z poprzednich sesji egzaminacyjnych wraz z przykładowymi rozwiązaniami</p>
+      </div>
+      
+      <div class="hero-stats">
+        <div class="stat-box">
+          <div class="stat-number">{{ profile.archives.length }}</div>
+          <div class="stat-label">Arkusze dostępne</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">{{ profile.archives.reduce((sum, a) => sum + a.downloaded, 0) }}</div>
+          <div class="stat-label">Łączne pobrania</div>
+        </div>
       </div>
     </div>
 
-    <div class="filter-section">
-      <h2 class="section-title">Wybierz kwalifikację</h2>
+    <div class="archives-section">
+      <h2 class="section-title">Dostępne arkusze egzaminacyjne</h2>
+      <ArchiveCards :archives="profile.archives" :qual-color="profile.color" />
     </div>
+  </div>
 
-    <QualificationList :qualifications="qualifications" />
+  <div v-else class="error-page">
+    <h1>404</h1>
+    <p>Nie znaleziono profilu</p>
+    <button @click="goBack" class="back-btn">Wróć do listy</button>
   </div>
 </template>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.courses-page {
-  width: 100%;
-  max-width: 1400px;
+.profile-page {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
 }
 
-.page-header {
+.back-btn {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 40px;
-  gap: 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
 }
 
-.header-content {
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--color-text);
+}
+
+.back-btn:hover {
+  border-color: var(--profile-color);
+  color: var(--profile-color);
+  transform: translateX(-4px);
+}
+
+.back-btn:hover svg {
+  stroke: var(--profile-color);
+}
+
+.profile-hero {
+  background: var(--color-card-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 24px;
+  padding: 48px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--profile-color);
+}
+
+.hero-content {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+  align-items: flex-start;
+}
+
+.hero-icon {
+  width: 100px;
+  height: 100px;
+  background: var(--color-bg-hover);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  flex-shrink: 0;
+}
+
+.hero-text {
   flex: 1;
 }
 
-.page-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.hero-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--profile-color);
+  line-height: 1.1;
   letter-spacing: -1px;
 }
 
-.page-subtitle {
-  font-size: 1.25rem;
+.hero-category {
+  padding: 6px 16px;
+  background: var(--color-bg-hover);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.hero-description {
+  font-size: 1.1rem;
   color: var(--color-subtext);
-  font-weight: 500;
+  line-height: 1.6;
 }
 
-.header-stats {
+.hero-stats {
   display: flex;
-  gap: 16px;
+  gap: 24px;
 }
 
-.stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px 32px;
+.stat-box {
+  flex: 1;
+  padding: 24px;
+  background: var(--color-bg-hover);
   border-radius: 16px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
 .stat-number {
   font-size: 2.5rem;
   font-weight: 900;
+  color: var(--profile-color);
+  margin-bottom: 8px;
   line-height: 1;
-  margin-bottom: 4px;
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  opacity: 0.9;
+  font-size: 0.95rem;
+  color: var(--color-subtext);
   font-weight: 600;
 }
 
-.info-card {
-  display: flex;
-  gap: 24px;
-  padding: 28px;
-  background: var(--color-card-bg);
-  border: 2px solid var(--color-border);
-  border-radius: 20px;
-  margin-bottom: 48px;
-}
-
-.info-icon {
-  font-size: 3rem;
-  flex-shrink: 0;
-}
-
-.info-content {
-  flex: 1;
-}
-
-.info-content h3 {
-  font-size: 1.4rem;
-  color: var(--color-text);
-  margin-bottom: 16px;
-  font-weight: 700;
-}
-
-.info-details {
-  display: flex;
-  gap: 32px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.info-label {
-  font-weight: 600;
-  color: var(--color-subtext);
-  font-size: 0.95rem;
-}
-
-.info-value {
-  font-weight: 700;
-  color: #667eea;
-  font-size: 0.95rem;
-}
-
-.info-description {
-  font-size: 1rem;
-  color: var(--color-subtext);
-  line-height: 1.6;
-}
-
-.filter-section {
-  margin-bottom: 32px;
+.archives-section {
+  margin-top: 48px;
 }
 
 .section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 24px;
+}
+
+.error-page {
+  max-width: 600px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error-page h1 {
+  font-size: 6rem;
+  font-weight: 900;
   color: var(--color-text);
   margin-bottom: 16px;
 }
 
-.filter-tags {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-tag {
-  padding: 10px 20px;
-  background: var(--color-bg);
-  border: 2px solid var(--color-border);
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-tag:hover {
-  border-color: #667eea;
-  color: #667eea;
-  transform: translateY(-2px);
-}
-
-.filter-tag.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-}
-
-@media (max-width: 1024px) {
-  .page-header {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .header-stats {
-    width: 100%;
-    justify-content: center;
-  }
+.error-page p {
+  font-size: 1.5rem;
+  color: var(--color-subtext);
+  margin-bottom: 32px;
 }
 
 @media (max-width: 768px) {
-  .courses-page {
-    padding: 30px 16px;
+  .profile-hero {
+    padding: 32px 24px;
   }
 
-  .page-title {
-    font-size: 2.5rem;
-  }
-
-  .page-subtitle {
-    font-size: 1.1rem;
-  }
-
-  .stat-card {
-    padding: 16px 24px;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-  }
-
-  .info-card {
+  .hero-content {
     flex-direction: column;
-    padding: 24px;
+    align-items: center;
+    text-align: center;
   }
 
-  .info-details {
+  .hero-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 3rem;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-stats {
     flex-direction: column;
-    gap: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .header-stats {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .stat-card {
-    width: 100%;
   }
 }
 </style>

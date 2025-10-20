@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import ArchiveCards from '../card/ArchiveCards.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   qualifications: {
@@ -10,10 +11,8 @@ const props = defineProps({
   }
 })
 
-const expandedCards = ref({})
-
-const toggleCard = (id) => {
-  expandedCards.value[id] = !expandedCards.value[id]
+const goToProfile = (qualId) => {
+  router.push(`/courses/${qualId}`)
 }
 </script>
 
@@ -23,42 +22,48 @@ const toggleCard = (id) => {
       v-for="qual in qualifications"
       :key="qual.id"
       class="qualification-card"
-      :style="{ borderColor: qual.color + '40' }"
+      :style="{ '--qual-color': qual.color }"
     >
-      <div class="qual-header" @click="toggleCard(qual.id)">
-        <div class="qual-info">
-          <div class="qual-icon" :style="{ background: qual.color + '20', color: qual.color }">
-            {{ qual.icon }}
-          </div>
-          <div class="qual-text">
-            <h2 class="qual-name">{{ qual.name }}</h2>
-            <p class="qual-title">{{ qual.title }}</p>
-          </div>
+      <div class="qual-header">
+        <div class="qual-icon">
+          {{ qual.icon }}
         </div>
-        <button class="expand-btn" :class="{ expanded: expandedCards[qual.id] }" @click.stop="toggleCard(qual.id)">
-          <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+        <div class="qual-text">
+          <h2 class="qual-name">{{ qual.name }}</h2>
+          <span class="qual-category">{{ qual.category }}</span>
+        </div>
       </div>
+
+      <p class="qual-title">{{ qual.title }}</p>
       <p class="qual-description">{{ qual.description }}</p>
-      <div class="archives-count">
-        <svg class="count-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>{{ qual.archives.length }} arkuszy dostępnych</span>
+
+      <div class="qual-stats">
+        <div class="stat-item">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span><strong>{{ qual.archives.length }}</strong> arkuszy</span>
+        </div>
+        <div class="stat-item">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span><strong>{{ qual.archives.reduce((sum, a) => sum + a.downloaded, 0).toLocaleString() }}</strong> pobrań</span>
+        </div>
       </div>
-      <transition name="expand">
-        <ArchiveCards v-if="expandedCards[qual.id]" :archives="qual.archives" :qual-color="qual.color" />
-      </transition>
+
       <button
-        class="show-archives-btn"
-        @click="toggleCard(qual.id)"
-        :style="{ background: qual.color + '15', color: qual.color, borderColor: qual.color + '30' }"
+        class="view-profile-btn"
+        @click="goToProfile(qual.id)"
       >
-        {{ expandedCards[qual.id] ? 'Zwiń listę' : 'Pokaż arkusze' }}
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <span>Przejdź do profilu</span>
+        <svg 
+          class="btn-icon"
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor"
+        >
+          <path d="M5 12h14m-7-7l7 7-7 7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
     </div>
@@ -68,193 +73,211 @@ const toggleCard = (id) => {
 <style scoped>
 .qualifications-grid {
   display: grid;
-  gap: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
 }
 
 .qualification-card {
-  background: var(--color-bg, #ffffff);
-  backdrop-filter: blur(12px);
-  border: 2px solid;
-  border-radius: 20px;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 24px;
   padding: 32px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.qualification-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--qual-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .qualification-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px var(--color-shadow, rgba(0, 0, 0, 0.1));
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px var(--color-shadow);
+  border-color: var(--qual-color);
+}
+
+.qualification-card:hover::before {
+  opacity: 1;
 }
 
 .qual-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  cursor: pointer;
-}
-
-.qual-info {
-  display: flex;
   align-items: center;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .qual-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
   flex-shrink: 0;
-}
-
-.qual-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.qual-name {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--color-text, #333333);
-}
-
-.qual-title {
-  font-size: 1rem;
-  color: var(--color-subtext, #666666);
-  font-weight: 500;
-}
-
-.expand-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--color-bg-hover, #f5f5f5);
-  border: 1px solid var(--color-border, #e0e0e0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.expand-btn:hover {
-  background: rgba(102, 126, 234, 0.1);
-}
-
-.expand-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--color-text, #333333);
+  background: var(--color-bg-hover);
   transition: transform 0.3s ease;
 }
 
-.expand-btn.expanded .expand-icon {
-  transform: rotate(180deg);
+.qualification-card:hover .qual-icon {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.qual-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qual-name {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  color: var(--qual-color);
+}
+
+.qual-category {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+  align-self: flex-start;
+}
+
+.qual-title {
+  font-size: 1.15rem;
+  color: var(--color-text);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 12px;
 }
 
 .qual-description {
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.6;
-  color: var(--color-subtext, #666666);
-  margin-bottom: 20px;
+  color: var(--color-subtext);
+  margin-bottom: 24px;
+  flex: 1;
 }
 
-.archives-count {
+.qual-stats {
+  display: flex;
+  gap: 24px;
+  padding: 16px;
+  background: var(--color-bg-hover);
+  border-radius: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  border: 1px solid var(--color-border);
+}
+
+.stat-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-bg-hover, #f5f5f5);
-  border-radius: 12px;
-  margin-bottom: 20px;
-  color: var(--color-text, #333333);
-  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.count-icon {
-  width: 20px;
-  height: 20px;
+.stat-item span {
+  color: var(--color-subtext);
 }
 
-.show-archives-btn {
+.stat-icon {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-subtext);
+}
+
+.stat-item strong {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.view-profile-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px 24px;
-  max-width: 200px;
-  margin: 20px auto 0;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 16px 28px;
+  width: 100%;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1.5px solid;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--qual-color);
+  background: var(--qual-color);
+  color: white;
 }
 
-.show-archives-btn:hover {
+.view-profile-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.view-profile-btn:active {
+  transform: translateY(0);
 }
 
 .btn-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  stroke: white;
   transition: transform 0.3s ease;
 }
 
-.show-archives-btn.expanded .btn-icon {
-  transform: rotate(180deg);
+.view-profile-btn:hover .btn-icon {
+  transform: translateX(4px);
 }
 
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.expand-enter-from,
-.expand-leave-to {
-  opacity: 0;
-  max-height: 0;
-}
-
-.expand-enter-to,
-.expand-leave-from {
-  opacity: 1;
-  max-height: 2000px;
+@media (max-width: 1200px) {
+  .qualifications-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
-  .qualification-card {
-    padding: 24px 20px;
+  .qualifications-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 
-  .qual-info {
-    gap: 16px;
+  .qualification-card {
+    padding: 28px;
   }
 
   .qual-icon {
-    width: 56px;
-    height: 56px;
-    font-size: 1.8rem;
+    width: 64px;
+    height: 64px;
+    font-size: 2rem;
   }
 
   .qual-name {
-    font-size: 1.4rem;
+    font-size: 1.7rem;
   }
 
-  .qual-title {
-    font-size: 0.9rem;
-  }
-
-  .show-archives-btn {
-    padding: 10px 20px;
-    max-width: 180px;
+  .qual-stats {
+    flex-direction: column;
+    gap: 12px;
   }
 }
 
@@ -265,12 +288,18 @@ const toggleCard = (id) => {
     gap: 16px;
   }
 
-  .expand-btn {
-    align-self: flex-end;
+  .qualification-card {
+    padding: 24px;
   }
 
-  .show-archives-btn {
-    max-width: 160px;
+  .qual-icon {
+    align-self: center;
+  }
+
+  .qual-text {
+    width: 100%;
+    align-items: center;
+    text-align: center;
   }
 }
 </style>

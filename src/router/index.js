@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Tests from '../components/tests/Tests.vue'
 import Courses from '../components/pages/Courses.vue'
+import Arkusz from '../components/pages/Arkusz.vue'
 import Home from '../components/common/Home.vue'
 import TestView from '../components/tests/TestView.vue'
 import QuestionsDatabase from '../components/tests/QuestionsDatabase.vue'
@@ -44,6 +45,13 @@ const routes = [
     path: '/courses', 
     name: 'Courses',
     component: Courses,
+    meta: { showLayout: true }
+  },
+  {
+    path: '/courses/:profileId',
+    name: 'Arkusz',
+    component: Arkusz,
+    props: true,
     meta: { showLayout: true }
   },
   { 
