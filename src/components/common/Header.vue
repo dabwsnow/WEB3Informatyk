@@ -152,7 +152,6 @@ onUnmounted(() => {
             </div>
           </button>
 
-          <!-- Если пользователь залогинен - показываем UserMenu, иначе кнопку Zaloguj -->
           <UserMenu 
             v-if="isLoggedIn" 
             :user="currentUser" 
@@ -161,7 +160,7 @@ onUnmounted(() => {
           
           <router-link 
             v-else
-            to="/login" 
+            to="/coming-soon" 
             class="nav-link nav-cta" 
             :class="{ active: $route.path === '/login' }" 
             @click="isMobileMenuOpen = false"
