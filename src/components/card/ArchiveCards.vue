@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 const props = defineProps({
   archives: {
     type: Array,
@@ -10,6 +12,66 @@ const props = defineProps({
     required: true
   }
 })
+
+// Состояние открытых dropdown меню
+const openDropdowns = ref({})
+
+const toggleDropdown = (archiveId) => {
+  openDropdowns.value[archiveId] = !openDropdowns.value[archiveId]
+}
+
+const closeDropdown = (archiveId) => {
+  openDropdowns.value[archiveId] = false
+}
+
+const downloadFile = (url, filename) => {
+  if (!url) {
+    alert('Plik niedostępny')
+    return
+  }
+  
+  const fullUrl = `http://localhost:8000${url}`
+  const a = document.createElement('a')
+  a.href = fullUrl
+  a.download = filename || 'download'
+  a.target = '_blank'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
+// Проверяем есть ли решения на разных языках (для INF.04)
+const hasMultipleSolutions = (files) => {
+  return files?.rozwiazanie_cs || files?.rozwiazanie_cpp || 
+         files?.rozwiazanie_java || files?.rozwiazanie_python
+}
+
+// Получаем список доступных языков
+const getAvailableLanguages = (files) => {
+  const languages = []
+  
+  if (files?.rozwiazanie_cs) {
+    languages.push({ name: 'C#', icon: '🔷', url: files.rozwiazanie_cs, code: 'cs' })
+  }
+  if (files?.rozwiazanie_cpp) {
+    languages.push({ name: 'C++', icon: '⚙️', url: files.rozwiazanie_cpp, code: 'cpp' })
+  }
+  if (files?.rozwiazanie_java) {
+    languages.push({ name: 'Java', icon: '☕', url: files.rozwiazanie_java, code: 'java' })
+  }
+  if (files?.rozwiazanie_python) {
+    languages.push({ name: 'Python', icon: '🐍', url: files.rozwiazanie_python, code: 'python' })
+  }
+  
+  return languages
+}
+
+const downloadSolution = (archive, languageCode) => {
+  const filename = `${archive.code}_rozwiazanie_${languageCode}.zip`
+  const url = archive.files[`rozwiazanie_${languageCode}`]
+  downloadFile(url, filename)
+  closeDropdown(archive.id)
+}
 </script>
 
 <template>
@@ -45,20 +107,89 @@ const props = defineProps({
       </div>
       
       <div class="archive-actions">
-        <button class="action-btn download-btn">
+        <!-- Arkusz -->
+        <button 
+          v-if="archive.files?.arkusz" 
+          class="action-btn download-btn"
+          @click="downloadFile(archive.files.arkusz, `${archive.code}_arkusz.pdf`)"
+        >
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Pobierz arkusz
         </button>
-        <button class="action-btn view-btn">
+        
+        <!-- Pliki -->
+        <button 
+          v-if="archive.files?.pliki" 
+          class="action-btn view-btn"
+          @click="downloadFile(archive.files.pliki, `${archive.code}_pliki.zip`)"
+        >
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"/>
-            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2"/>
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Zobacz rozwiązanie
+          Pobierz pliki
         </button>
-        <button class="action-btn download-solution-btn">
+
+        <!-- Klucz odpowiedzi (tylko для INF.04) -->
+        <button 
+          v-if="archive.files?.klucz_odpowiedzi" 
+          class="action-btn key-btn"
+          @click="downloadFile(archive.files.klucz_odpowiedzi, `${archive.code}_klucz.pdf`)"
+        >
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Klucz odpowiedzi
+        </button>
+
+        <!-- Materiały (tylko для INF.04) -->
+        <button 
+          v-if="archive.files?.materialy" 
+          class="action-btn materials-btn"
+          @click="downloadFile(archive.files.materialy, `${archive.code}_materialy.zip`)"
+        >
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Materiały
+        </button>
+        
+        <!-- Rozwiązanie z dropdown dla INF.04 -->
+        <div v-if="hasMultipleSolutions(archive.files)" class="dropdown-wrapper">
+          <button 
+            class="action-btn download-solution-btn"
+            @click="toggleDropdown(archive.id)"
+          >
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Pobierz rozwiązanie
+            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          
+          <!-- Dropdown menu -->
+          <div v-if="openDropdowns[archive.id]" class="dropdown-menu">
+            <div 
+              v-for="lang in getAvailableLanguages(archive.files)"
+              :key="lang.code"
+              class="dropdown-item"
+              @click="downloadSolution(archive, lang.code)"
+            >
+              <span class="lang-icon">{{ lang.icon }}</span>
+              <span class="lang-name">{{ lang.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Обычное rozwiązanie для других профилей -->
+        <button 
+          v-else-if="archive.files?.rozwiazanie" 
+          class="action-btn download-solution-btn"
+          @click="downloadFile(archive.files.rozwiazanie, `${archive.code}_rozwiazanie.zip`)"
+        >
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -70,6 +201,80 @@ const props = defineProps({
 </template>
 
 <style scoped>
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  margin-left: 0.25rem;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 10;
+  min-width: 200px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.lang-icon {
+  font-size: 1.25rem;
+}
+
+.lang-name {
+  font-weight: 600;
+  color: #374151;
+}
+
+.key-btn {
+  background: #f59e0b;
+  border: none;
+  color: white;
+}
+
+.key-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.materials-btn {
+  background: #8b5cf6;
+  color: white;
+}
+
+.materials-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .dropdown-menu {
+    left: 0;
+    right: 0;
+  }
+}
+
 .archives-list {
   margin-top: 24px;
   display: flex;

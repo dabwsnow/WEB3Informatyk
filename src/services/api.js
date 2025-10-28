@@ -9,7 +9,7 @@ export const api = {
     }
     return await response.json()
   },
-
+  
   // Получить тест по категории
   async getTest(categoryCode) {
     const response = await fetch(`${API_BASE_URL}/api/tests/${categoryCode}`)
@@ -18,17 +18,16 @@ export const api = {
     }
     return await response.json()
   },
-
+  
   // Получить базу вопросов (все вопросы категории с ответами)
   async getQuestionDatabase(categoryCode) {
-    // ИСПРАВЛЕНО: Используем categoryCode напрямую (inf02-baza, inf03-baza и т.д.)
     const response = await fetch(`${API_BASE_URL}/api/tests/${categoryCode}`)
     if (!response.ok) {
       throw new Error('Не удалось загрузить базу вопросов')
     }
     return await response.json()
   },
-
+  
   // Отправить результаты теста
   async submitTest(categoryCode, answers) {
     const response = await fetch(`${API_BASE_URL}/api/tests/submit`, {
@@ -46,15 +45,44 @@ export const api = {
     }
     return await response.json()
   },
-
+  
   async search(query) {
-    if (!query || query.trim().length < 2) {
-      return { questions: [], tests: [] }
-    }
-    
-    const response = await fetch(`${API_BASE_URL}/api/search?q=${encodeURIComponent(query)}`)
+  if (!query || query.trim().length < 2) {
+    return { questions: [], tests: [], practices: [] }  // ← Добавь practices
+  }
+  
+  const response = await fetch(`${API_BASE_URL}/api/search?q=${encodeURIComponent(query)}`)
+  if (!response.ok) {
+    throw new Error('Ошибка поиска')
+  }
+  return await response.json()
+},
+
+  // === ПРАКТИКА API ===
+  
+  // Получить все профили практики
+  async getPracticeProfiles() {
+    const response = await fetch(`${API_BASE_URL}/api/practice/profiles`)
     if (!response.ok) {
-      throw new Error('Ошибка поиска')
+      throw new Error('Не удалось загрузить профили практики')
+    }
+    return await response.json()
+  },
+
+  // Получить детали профиля с архивами
+  async getPracticeProfile(profileId) {
+    const response = await fetch(`${API_BASE_URL}/api/practice/profile/${profileId}`)
+    if (!response.ok) {
+      throw new Error('Не удалось загрузить профиль')
+    }
+    return await response.json()
+  },
+
+  // Получить детали конкретного архива
+  async getPracticeArchive(profileId, archiveId) {
+    const response = await fetch(`${API_BASE_URL}/api/practice/archive/${profileId}/${archiveId}`)
+    if (!response.ok) {
+      throw new Error('Не удалось загрузить архив')
     }
     return await response.json()
   }

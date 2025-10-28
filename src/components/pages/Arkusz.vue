@@ -1,132 +1,28 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ArchiveCards from '../card/ArchiveCards.vue'
+import { api } from '../../services/api'
 
 const route = useRoute()
 const router = useRouter()
 
-// Все профили с данными
-const profiles = {
-  'inf02': {
-    id: 'inf02',
-    name: 'INF.02',
-    title: 'Administracja systemami komputerowymi',
-    icon: '🖥️',
-    color: '#667eea',
-    category: 'Technik informatyk',
-    description: 'Administracja i eksploatacja systemów komputerowych, urządzeń peryferyjnych i lokalnych sieci komputerowych',
-    archives: [
-      { id: 1, code: 'INF.02-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 1245 },
-      { id: 2, code: 'INF.02-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 2130 },
-      { id: 3, code: 'INF.02-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 3456 },
-      { id: 4, code: 'INF.02-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 2890 },
-      { id: 5, code: 'INF.02-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 4120 },
-    ]
-  },
-  'ee08': {
-    id: 'ee08',
-    name: 'EE.08',
-    title: 'Montaż i eksploatacja systemów komputerowych',
-    icon: '🔧',
-    color: '#f59e0b',
-    category: 'Technik informatyk (stara podstawa)',
-    description: 'Montaż, uruchamianie i konserwacja komputerów oraz urządzeń peryferyjnych',
-    archives: [
-      { id: 1, code: 'EE.08-01-21.06', date: 'Czerwiec 2021', type: 'Egzamin główny', downloaded: 5230 },
-      { id: 2, code: 'EE.08-02-21.01', date: 'Styczeń 2021', type: 'Egzamin główny', downloaded: 4560 },
-      { id: 3, code: 'EE.08-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 6123 },
-    ]
-  },
-  'e12': {
-    id: 'e12',
-    name: 'E.12',
-    title: 'Montaż i eksploatacja komputerów osobistych',
-    icon: '💻',
-    color: '#06b6d4',
-    category: 'Technik informatyk (bardzo stara podstawa)',
-    description: 'Montaż komputerów osobistych oraz instalacja systemów i programów użytkowych',
-    archives: [
-      { id: 1, code: 'E.12-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 3890 },
-      { id: 2, code: 'E.12-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4234 },
-    ]
-  },
-  'e13': {
-    id: 'e13',
-    name: 'E.13',
-    title: 'Projektowanie lokalnych sieci komputerowych',
-    icon: '🌐',
-    color: '#8b5cf6',
-    category: 'Technik informatyk (bardzo stara podstawa)',
-    description: 'Projektowanie lokalnych sieci komputerowych i administrowanie sieciami',
-    archives: [
-      { id: 1, code: 'E.13-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 3567 },
-      { id: 2, code: 'E.13-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4012 },
-    ]
-  },
-  'inf03': {
-    id: 'inf03',
-    name: 'INF.03',
-    title: 'Tworzenie i administrowanie stronami',
-    icon: '💾',
-    color: '#10b981',
-    category: 'Technik programista',
-    description: 'Tworzenie i administrowanie stronami i aplikacjami internetowymi oraz bazami danych',
-    archives: [
-      { id: 1, code: 'INF.03-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 2340 },
-      { id: 2, code: 'INF.03-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 3120 },
-      { id: 3, code: 'INF.03-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 4567 },
-      { id: 4, code: 'INF.03-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 3890 },
-      { id: 5, code: 'INF.03-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 5234 },
-    ]
-  },
-  'ee09': {
-    id: 'ee09',
-    name: 'EE.09',
-    title: 'Programowanie aplikacji internetowych',
-    icon: '🌍',
-    color: '#ec4899',
-    category: 'Technik programista (stara podstawa)',
-    description: 'Tworzenie aplikacji internetowych i baz danych oraz administrowanie bazami',
-    archives: [
-      { id: 1, code: 'EE.09-01-21.06', date: 'Czerwiec 2021', type: 'Egzamin główny', downloaded: 6123 },
-      { id: 2, code: 'EE.09-02-21.01', date: 'Styczeń 2021', type: 'Egzamin główny', downloaded: 5432 },
-      { id: 3, code: 'EE.09-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 7234 },
-    ]
-  },
-  'e14': {
-    id: 'e14',
-    name: 'E.14',
-    title: 'Tworzenie aplikacji internetowych i baz danych',
-    icon: '📊',
-    color: '#f43f5e',
-    category: 'Technik programista (bardzo stara podstawa)',
-    description: 'Tworzenie aplikacji internetowych, baz danych i administrowanie bazami danych',
-    archives: [
-      { id: 1, code: 'E.14-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 6543 },
-      { id: 2, code: 'E.14-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 7123 },
-    ]
-  },
-  'inf04': {
-    id: 'inf04',
-    name: 'INF.04',
-    title: 'Projektowanie, programowanie i testowanie aplikacji',
-    icon: '📱',
-    color: '#a855f7',
-    category: 'Technik programista',
-    description: 'Projektowanie, programowanie i testowanie aplikacji desktopowych i mobilnych',
-    archives: [
-      { id: 1, code: 'INF.04-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 890 },
-      { id: 2, code: 'INF.04-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 1230 },
-      { id: 3, code: 'INF.04-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 2345 },
-      { id: 4, code: 'INF.04-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 1890 },
-    ]
-  }
-}
+const profile = ref(null)
+const loading = ref(true)
+const error = ref(null)
 
-const profile = computed(() => {
-  const profileId = route.params.profileId
-  return profiles[profileId] || null
+onMounted(async () => {
+  try {
+    loading.value = true
+    const profileId = route.params.profileId
+    const data = await api.getPracticeProfile(profileId)
+    profile.value = data
+  } catch (err) {
+    error.value = err.message
+    console.error('Ошибка загрузки профиля:', err)
+  } finally {
+    loading.value = false
+  }
 })
 
 const goBack = () => {
@@ -135,7 +31,17 @@ const goBack = () => {
 </script>
 
 <template>
-  <div v-if="profile" class="profile-page">
+  <div v-if="loading" class="loading">
+    <p>Загрузка...</p>
+  </div>
+
+  <div v-else-if="error" class="error-page">
+    <h1>Ошибка</h1>
+    <p>{{ error }}</p>
+    <button @click="goBack" class="back-btn">Wróć do listy</button>
+  </div>
+
+  <div v-else-if="profile" class="profile-page">
     <button class="back-btn" @click="goBack">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M19 12H5m7-7l-7 7 7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -158,11 +64,11 @@ const goBack = () => {
       
       <div class="hero-stats">
         <div class="stat-box">
-          <div class="stat-number">{{ profile.archives.length }}</div>
+          <div class="stat-number">{{ profile.archives_count }}</div>
           <div class="stat-label">Arkusze dostępne</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number">{{ profile.archives.reduce((sum, a) => sum + a.downloaded, 0) }}</div>
+          <div class="stat-number">{{ profile.total_downloads }}</div>
           <div class="stat-label">Łączne pobrania</div>
         </div>
       </div>

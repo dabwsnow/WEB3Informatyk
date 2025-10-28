@@ -1,61 +1,59 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { api } from '../../services/api'
 
 const router = useRouter()
 const searchQuery = ref('')
 const isFocused = ref(false)
 const searchInput = ref(null)
 const searchContainer = ref(null)
+const isSearching = ref(false)
 
-// База всех данных для поиска
-const searchData = {
-  questions: [
-    { id: 1, question: 'Który protokół jest używany do bezpiecznego przesyłania plików?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
-    { id: 2, question: 'Jaka jest domyślna maska podsieci dla klasy C?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
-    { id: 3, question: 'Który port używa protokół HTTPS?', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'question' },
-    { id: 4, question: 'Która właściwość CSS służy do zmiany koloru tekstu?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
-    { id: 5, question: 'Która metoda HTTP jest używana do wysyłania danych formularza?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
-    { id: 6, question: 'Co oznacza SQL?', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'question' },
-    { id: 7, question: 'Która funkcja w JavaScript służy do wyświetlania komunikatu w konsoli?', category: 'inf04-baza', categoryName: 'INF.04', type: 'question' },
-    { id: 8, question: 'Co to jest JSON?', category: 'inf04-baza', categoryName: 'INF.04', type: 'question' },
-    { id: 9, question: 'Która magistrala jest używana do podłączania dysków SSD?', category: 'e12-baza', categoryName: 'E.12', type: 'question' },
-    { id: 10, question: 'Ile pinów ma złącze procesora Intel LGA 1200?', category: 'e12-baza', categoryName: 'E.12', type: 'question' },
-    { id: 11, question: 'Jaki jest zakres adresów IP klasy A?', category: 'e13-baza', categoryName: 'E.13', type: 'question' },
-    { id: 12, question: 'Który protokół służy do automatycznego przydzielania adresów IP?', category: 'e13-baza', categoryName: 'E.13', type: 'question' }
-  ],
-  tests: [
-    { id: 1, title: 'Test 40 pytań INF.02 / EE.08', category: 'inf02-40', categoryName: 'INF.02 / EE.08', type: 'test', questions: 40 },
-    { id: 2, title: 'Test 20 pytań INF.02 / EE.08', category: 'inf02-20', categoryName: 'INF.02 / EE.08', type: 'test', questions: 20 },
-    { id: 3, title: 'Losowe pytanie INF.02 / EE.08', category: 'inf02-1', categoryName: 'INF.02 / EE.08', type: 'test', questions: 1 },
-    { id: 4, title: 'Baza pytań INF.02 / EE.08', category: 'inf02-baza', categoryName: 'INF.02 / EE.08', type: 'database', questions: 900 },
-    { id: 5, title: 'Test 40 pytań INF.03 / EE.09 / E.14', category: 'inf03-40', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 40 },
-    { id: 6, title: 'Test 20 pytań INF.03 / EE.09 / E.14', category: 'inf03-20', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 20 },
-    { id: 7, title: 'Losowe pytanie INF.03 / EE.09 / E.14', category: 'inf03-1', categoryName: 'INF.03 / EE.09 / E.14', type: 'test', questions: 1 },
-    { id: 8, title: 'Baza pytań INF.03 / EE.09 / E.14', category: 'inf03-baza', categoryName: 'INF.03 / EE.09 / E.14', type: 'database', questions: 900 }
-  ]
-}
-
-const searchResults = computed(() => {
-  if (!searchQuery.value.trim()) return { questions: [], tests: [] }
-  
-  const query = searchQuery.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  
-  const questions = searchData.questions.filter(q => 
-    q.question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query) ||
-    q.categoryName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query)
-  ).slice(0, 4)
-  
-  const tests = searchData.tests.filter(t => 
-    t.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query) ||
-    t.categoryName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(query)
-  ).slice(0, 4)
-  
-  return { questions, tests }
+// Результаты из API
+const searchResults = ref({
+  questions: [],
+  tests: [],
+  practices: []
 })
 
+// Debounce для поиска
+let searchTimeout = null
+
+watch(searchQuery, (newQuery) => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  
+  if (newQuery.trim().length < 2) {
+    searchResults.value = { questions: [], tests: [], practices: [] }
+    return
+  }
+  
+  searchTimeout = setTimeout(async () => {
+    await performSearch(newQuery)
+  }, 300)
+})
+
+const performSearch = async (query) => {
+  if (!query || query.trim().length < 2) return
+  
+  try {
+    isSearching.value = true
+    const results = await api.search(query.trim())
+    searchResults.value = results
+  } catch (error) {
+    console.error('Ошибка поиска:', error)
+    searchResults.value = { questions: [], tests: [], practices: [] }
+  } finally {
+    isSearching.value = false
+  }
+}
+
 const hasResults = computed(() => {
-  return searchResults.value.questions.length > 0 || searchResults.value.tests.length > 0
+  return searchResults.value.questions.length > 0 || 
+         searchResults.value.tests.length > 0 ||
+         searchResults.value.practices.length > 0
 })
 
 const showDropdown = computed(() => {
@@ -72,6 +70,17 @@ const goToTest = (test) => {
     router.push(`/baza/${test.category}`)
   } else {
     router.push(`/tests/${test.category}`)
+  }
+  closeSearch()
+}
+
+const goToPractice = (practice) => {
+  if (practice.type === 'archive') {
+    // Переход к профилю (можно позже сделать прокрутку к архиву)
+    router.push(`/courses/${practice.profile_id}`)
+  } else {
+    // Переход к профилю
+    router.push(`/courses/${practice.profile_id}`)
   }
   closeSearch()
 }
@@ -118,7 +127,7 @@ onUnmounted(() => {
           v-model="searchQuery"
           @focus="isFocused = true"
           type="text"
-          placeholder="Szukaj pytań, testów, tematów..."
+          placeholder="Szukaj pytań, testów, arkuszy praktycznych..."
           class="search-input"
         />
         <button v-if="searchQuery" @click="closeSearch" class="clear-search-btn">
@@ -131,7 +140,14 @@ onUnmounted(() => {
       <transition name="dropdown">
         <div v-if="showDropdown" class="search-dropdown">
           <div class="dropdown-content">
-            <div v-if="!hasResults" class="no-results-dropdown">
+            <!-- Loading -->
+            <div v-if="isSearching" class="search-loading">
+              <div class="spinner"></div>
+              <p>Szukam...</p>
+            </div>
+
+            <!-- No Results -->
+            <div v-else-if="!hasResults" class="no-results-dropdown">
               <svg class="no-results-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <circle cx="11" cy="11" r="8" stroke-width="2"/>
                 <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round"/>
@@ -139,66 +155,102 @@ onUnmounted(() => {
               <p>Nie znaleziono "{{ searchQuery }}"</p>
             </div>
 
-            <div v-if="searchResults.questions.length > 0" class="dropdown-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span>Pytania</span>
-              </div>
-              <div
-                v-for="question in searchResults.questions"
-                :key="question.id"
-                @click="goToQuestion(question)"
-                class="dropdown-item"
-              >
-                <div class="item-icon question-icon">?</div>
-                <div class="item-content">
-                  <div class="item-title">{{ question.question }}</div>
-                  <span class="item-badge">{{ question.categoryName }}</span>
+            <!-- Results -->
+            <template v-else>
+              <!-- Praktyki -->
+              <div v-if="searchResults.practices.length > 0" class="dropdown-section">
+                <div class="section-header">
+                  <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Praktyka</span>
                 </div>
-                <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-
-            <div v-if="searchResults.tests.length > 0" class="dropdown-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke-width="2"/>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke-width="2"/>
-                </svg>
-                <span>Testy i Bazy</span>
-              </div>
-              <div
-                v-for="test in searchResults.tests"
-                :key="test.id"
-                @click="goToTest(test)"
-                class="dropdown-item"
-              >
-                <div class="item-icon test-icon">
-                  {{ test.type === 'database' ? '📚' : '📝' }}
-                </div>
-                <div class="item-content">
-                  <div class="item-title">{{ test.title }}</div>
-                  <div class="item-meta">
-                    <span class="item-badge">{{ test.categoryName }}</span>
-                    <span class="item-info">{{ test.questions }} pytań</span>
+                <div
+                  v-for="practice in searchResults.practices"
+                  :key="practice.id"
+                  @click="goToPractice(practice)"
+                  class="dropdown-item practice-item"
+                  :style="{ '--practice-color': practice.color }"
+                >
+                  <div class="item-icon practice-icon">{{ practice.icon }}</div>
+                  <div class="item-content">
+                    <div class="item-title">{{ practice.title }}</div>
+                    <div class="item-meta">
+                      <span class="item-badge practice-badge">{{ practice.category }}</span>
+                      <span v-if="practice.subtitle" class="item-info">{{ practice.subtitle }}</span>
+                      <span v-if="practice.archives_count" class="item-info">{{ practice.archives_count }} arkuszy</span>
+                    </div>
                   </div>
+                  <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
-                <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
               </div>
-            </div>
+
+              <!-- Pytania -->
+              <div v-if="searchResults.questions.length > 0" class="dropdown-section">
+                <div class="section-header">
+                  <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <span>Pytania</span>
+                </div>
+                <div
+                  v-for="question in searchResults.questions"
+                  :key="question.id"
+                  @click="goToQuestion(question)"
+                  class="dropdown-item"
+                >
+                  <div class="item-icon question-icon">{{ question.icon || '?' }}</div>
+                  <div class="item-content">
+                    <div class="item-title">{{ question.question }}</div>
+                    <span class="item-badge">{{ question.categoryName }}</span>
+                  </div>
+                  <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Testy -->
+              <div v-if="searchResults.tests.length > 0" class="dropdown-section">
+                <div class="section-header">
+                  <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke-width="2"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke-width="2"/>
+                  </svg>
+                  <span>Testy i Bazy</span>
+                </div>
+                <div
+                  v-for="test in searchResults.tests"
+                  :key="test.id"
+                  @click="goToTest(test)"
+                  class="dropdown-item"
+                >
+                  <div class="item-icon test-icon">
+                    {{ test.icon || (test.type === 'database' ? '📚' : '📝') }}
+                  </div>
+                  <div class="item-content">
+                    <div class="item-title">{{ test.title }}</div>
+                    <div class="item-meta">
+                      <span class="item-badge">{{ test.categoryName }}</span>
+                      <span class="item-info">{{ test.questions }} pytań</span>
+                    </div>
+                  </div>
+                  <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
       </transition>
     </div>
   </div>
 </template>
+
 <style scoped>
 .global-search-container {
   position: relative;
@@ -258,6 +310,44 @@ onUnmounted(() => {
 
 .search-wrapper.focused .search-icon {
   transform: scale(1.1);
+}
+
+.search-loading {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 12px;
+  border: 3px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.search-loading p {
+  color: var(--color-subtext, #666);
+  font-size: 0.9rem;
+}
+
+.practice-item {
+  border-left: 3px solid var(--practice-color);
+}
+
+.practice-icon {
+  background: transparent !important;
+  font-size: 1.8rem !important;
+}
+
+.practice-badge {
+  background: var(--practice-color) !important;
+  color: white !important;
 }
 
 .search-input {
