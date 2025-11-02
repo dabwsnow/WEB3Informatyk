@@ -30,9 +30,8 @@ const downloadFile = (url, filename) => {
     return
   }
   
-  const fullUrl = `http://localhost:8000${url}`
   const a = document.createElement('a')
-  a.href = fullUrl
+  a.href = url 
   a.download = filename || 'download'
   a.target = '_blank'
   document.body.appendChild(a)
@@ -40,13 +39,11 @@ const downloadFile = (url, filename) => {
   document.body.removeChild(a)
 }
 
-// Проверяем есть ли решения на разных языках (для INF.04)
 const hasMultipleSolutions = (files) => {
   return files?.rozwiazanie_cs || files?.rozwiazanie_cpp || 
          files?.rozwiazanie_java || files?.rozwiazanie_python
 }
 
-// Получаем список доступных языков
 const getAvailableLanguages = (files) => {
   const languages = []
   
@@ -107,7 +104,6 @@ const downloadSolution = (archive, languageCode) => {
       </div>
       
       <div class="archive-actions">
-        <!-- Arkusz -->
         <button 
           v-if="archive.files?.arkusz" 
           class="action-btn download-btn"
@@ -119,7 +115,6 @@ const downloadSolution = (archive, languageCode) => {
           Pobierz arkusz
         </button>
         
-        <!-- Pliki -->
         <button 
           v-if="archive.files?.pliki" 
           class="action-btn view-btn"
@@ -131,7 +126,6 @@ const downloadSolution = (archive, languageCode) => {
           Pobierz pliki
         </button>
 
-        <!-- Klucz odpowiedzi (tylko для INF.04) -->
         <button 
           v-if="archive.files?.klucz_odpowiedzi" 
           class="action-btn key-btn"
@@ -143,7 +137,6 @@ const downloadSolution = (archive, languageCode) => {
           Klucz odpowiedzi
         </button>
 
-        <!-- Materiały (tylko для INF.04) -->
         <button 
           v-if="archive.files?.materialy" 
           class="action-btn materials-btn"
@@ -155,7 +148,6 @@ const downloadSolution = (archive, languageCode) => {
           Materiały
         </button>
         
-        <!-- Rozwiązanie z dropdown dla INF.04 -->
         <div v-if="hasMultipleSolutions(archive.files)" class="dropdown-wrapper">
           <button 
             class="action-btn download-solution-btn"
@@ -170,7 +162,6 @@ const downloadSolution = (archive, languageCode) => {
             </svg>
           </button>
           
-          <!-- Dropdown menu -->
           <div v-if="openDropdowns[archive.id]" class="dropdown-menu">
             <div 
               v-for="lang in getAvailableLanguages(archive.files)"
@@ -184,7 +175,6 @@ const downloadSolution = (archive, languageCode) => {
           </div>
         </div>
 
-        <!-- Обычное rozwiązanie для других профилей -->
         <button 
           v-else-if="archive.files?.rozwiazanie" 
           class="action-btn download-solution-btn"
