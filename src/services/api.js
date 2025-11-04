@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.web-informatyk.lol'
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 export const api = {
   // Получить список категорий

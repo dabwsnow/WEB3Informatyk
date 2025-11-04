@@ -11,13 +11,11 @@ const qualifications = ref([
     color: '#667eea',
     category: 'Technik informatyk',
     description: 'Administracja i eksploatacja systemów komputerowych, urządzeń peryferyjnych i lokalnych sieci komputerowych',
-    archives: [
-      { id: 1, code: 'INF.02-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 1245 },
-      { id: 2, code: 'INF.02-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 2130 },
-      { id: 3, code: 'INF.02-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 3456 },
-      { id: 4, code: 'INF.02-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 2890 },
-      { id: 5, code: 'INF.02-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 4120 },
-    ]
+    archives: Array(28).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `INF.02-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(68600 / 28) 
+    }))
   },
   {
     id: 'ee08',
@@ -27,11 +25,11 @@ const qualifications = ref([
     color: '#f59e0b',
     category: 'Technik informatyk (stara podstawa)',
     description: 'Montaż, uruchamianie i konserwacja komputerów oraz urządzeń peryferyjnych',
-    archives: [
-      { id: 1, code: 'EE.08-01-21.06', date: 'Czerwiec 2021', type: 'Egzamin główny', downloaded: 5230 },
-      { id: 2, code: 'EE.08-02-21.01', date: 'Styczeń 2021', type: 'Egzamin główny', downloaded: 4560 },
-      { id: 3, code: 'EE.08-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 6123 },
-    ]
+    archives: Array(30).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `EE.08-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(76500 / 30) 
+    }))
   },
   {
     id: 'e12',
@@ -41,10 +39,11 @@ const qualifications = ref([
     color: '#06b6d4',
     category: 'Technik informatyk (bardzo stara podstawa)',
     description: 'Montaż komputerów osobistych oraz instalacja systemów i programów użytkowych',
-    archives: [
-      { id: 1, code: 'E.12-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 3890 },
-      { id: 2, code: 'E.12-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4234 },
-    ]
+    archives: Array(63).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `E.12-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(264600 / 63) 
+    }))
   },
   {
     id: 'e13',
@@ -54,10 +53,11 @@ const qualifications = ref([
     color: '#8b5cf6',
     category: 'Technik informatyk (bardzo stara podstawa)',
     description: 'Projektowanie lokalnych sieci komputerowych i administrowanie sieciami',
-    archives: [
-      { id: 1, code: 'E.13-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 3567 },
-      { id: 2, code: 'E.13-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 4012 },
-    ]
+    archives: Array(68).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `E.13-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(302600 / 68) 
+    }))
   },
   {
     id: 'inf03',
@@ -67,13 +67,11 @@ const qualifications = ref([
     color: '#10b981',
     category: 'Technik programista',
     description: 'Tworzenie i administrowanie stronami i aplikacjami internetowymi oraz bazami danych',
-    archives: [
-      { id: 1, code: 'INF.03-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 2340 },
-      { id: 2, code: 'INF.03-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 3120 },
-      { id: 3, code: 'INF.03-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 4567 },
-      { id: 4, code: 'INF.03-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 3890 },
-      { id: 5, code: 'INF.03-05-22.06', date: 'Czerwiec 2022', type: 'Egzamin główny', downloaded: 5234 },
-    ]
+    archives: Array(49).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `INF.03-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(171500 / 49) 
+    }))
   },
   {
     id: 'ee09',
@@ -83,11 +81,11 @@ const qualifications = ref([
     color: '#ec4899',
     category: 'Technik programista (stara podstawa)',
     description: 'Tworzenie aplikacji internetowych i baz danych oraz administrowanie bazami',
-    archives: [
-      { id: 1, code: 'EE.09-01-21.06', date: 'Czerwiec 2021', type: 'Egzamin główny', downloaded: 6123 },
-      { id: 2, code: 'EE.09-02-21.01', date: 'Styczeń 2021', type: 'Egzamin główny', downloaded: 5432 },
-      { id: 3, code: 'EE.09-03-20.06', date: 'Czerwiec 2020', type: 'Egzamin główny', downloaded: 7234 },
-    ]
+    archives: Array(45).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `EE.09-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(148500 / 45) 
+    }))
   },
   {
     id: 'e14',
@@ -97,10 +95,11 @@ const qualifications = ref([
     color: '#f43f5e',
     category: 'Technik programista (bardzo stara podstawa)',
     description: 'Tworzenie aplikacji internetowych, baz danych i administrowanie bazami danych',
-    archives: [
-      { id: 1, code: 'E.14-01-20.01', date: 'Styczeń 2020', type: 'Egzamin główny', downloaded: 6543 },
-      { id: 2, code: 'E.14-02-19.06', date: 'Czerwiec 2019', type: 'Egzamin główny', downloaded: 7123 },
-    ]
+    archives: Array(79).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `E.14-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(395000 / 79) 
+    }))
   },
   {
     id: 'inf04',
@@ -110,12 +109,11 @@ const qualifications = ref([
     color: '#a855f7',
     category: 'Technik programista',
     description: 'Projektowanie, programowanie i testowanie aplikacji desktopowych i mobilnych',
-    archives: [
-      { id: 1, code: 'INF.04-01-24.06', date: 'Czerwiec 2024', type: 'Egzamin główny', downloaded: 890 },
-      { id: 2, code: 'INF.04-02-24.01', date: 'Styczeń 2024', type: 'Egzamin główny', downloaded: 1230 },
-      { id: 3, code: 'INF.04-03-23.06', date: 'Czerwiec 2023', type: 'Egzamin główny', downloaded: 2345 },
-      { id: 4, code: 'INF.04-04-23.01', date: 'Styczeń 2023', type: 'Egzamin główny', downloaded: 1890 },
-    ]
+    archives: Array(13).fill(null).map((_, i) => ({ 
+      id: i + 1, 
+      code: `INF.04-${String(i + 1).padStart(2, '0')}`, 
+      downloaded: Math.floor(22100 / 13) 
+    }))
   }
 ])
 </script>
